@@ -25,3 +25,13 @@ function array_push_unique(arr, value) {
 		array_push(arr, value);
 	}
 }
+
+/// @arg arr
+function array_get_random(arr) {
+	return arr[irandom(array_length(arr) - 1)];
+}
+
+/// @arg arr
+function array_empty(arr) {
+	return (array_length(arr) == 0);
+}

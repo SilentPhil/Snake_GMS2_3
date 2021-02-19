@@ -16,12 +16,15 @@ function Map() constructor {
 	level_template[i++]	= [1, 0, 0, 1, 0, 0, 1, 0, 0, 1];
 	level_template[i++]	= [1, 1, 1, 1, 0, 0, 1, 1, 1, 1];
 
-	
+	__map_filter = new MapFilter(self);		/// @is {MapFilter}
 	__array_of_cells = [];
+	__array_of_cells_one_dimensional = [];
+	
 	for (var i = 0, size_i = array_length(level_template); i < size_i; i++) {
 		for (var j = 0, size_j = array_length(level_template[0]); j < size_j; j++) {
 			var cell/*:MapCell*/ = new MapCell(new Vector(i, j));
 			__array_of_cells[i][j] = cell;
+			array_push(__array_of_cells_one_dimensional, cell);
 			if (level_template[i][j] == 1) {
 				cell.set_object(new Wall());
 			} else {
@@ -46,6 +49,64 @@ function Map() constructor {
 		return array_length(__array_of_cells[0]);
 	}
 }
+
+function MapFilter(_map/*:Map*/) constructor {
+	__map = _map;
+	
+	static get_array_of_cells = function()/*->MapFilterResult*/ {
+		return new MapFilterResult(__map);
+	}
+}
+
+function MapFilterResult(_map/*:Map*/) constructor {
+	__array_of_cells = [];		/// @is {array<MapCell>}
+	array_copy(__array_of_cells, 0, _map.__array_of_cells_one_dimensional, 0, array_length(_map.__array_of_cells_one_dimensional));
+	
+	/// @arg {string} obj_type
+	/// @arg {string} [obj_type...]
+	static including = function() {
+		var i = 0;
+		while (i < array_length(__array_of_cells)){
+			var cell/*:MapCell*/ = __array_of_cells[i];
+			for (var j = 0; j < argument_count; j++) {
+				if (cell.get_specific_object(argument[j]) == undefined) {
+					array_delete(__array_of_cells, i, 1);
+				} else {
+					i++;
+				}
+			}
+		}
+		return self;
+	}
+	
+	/// @arg {string} obj_type
+	/// @arg {string} [obj_type...]
+	static excluding = function() {
+		var i = 0;
+		var is_deleted = false;
+		while (i < array_length(__array_of_cells)){
+			var cell/*:MapCell*/ = __array_of_cells[i];
+			for (var j = 0; j < argument_count; j++) {
+				if (cell.get_specific_object(argument[j]) != undefined) {
+					array_delete(__array_of_cells, i, 1);
+					is_deleted = true;
+					break;
+				}
+			}
+			if (!is_deleted) {
+				i++;
+			} else {
+				is_deleted = false;
+			}
+		}		
+		return self;
+	}
+	
+	static get_result_arr = function()/*->array<MapCell>*/ { 
+		return __array_of_cells;
+	}
+}
+
 
 function MapCell(_position/*:Vector*/) constructor {
 	__position			= _position;		/// @is {Vector}
@@ -78,37 +139,4 @@ function MapCell(_position/*:Vector*/) constructor {
 		}
 		return undefined;
 	}
-}
-
-function MapObject() constructor {
-	__cell = undefined;	/// @is {MapCell}
-	__type = "";
-	
-	static get_cell = function()/*->MapCell|undefined*/ {
-		return __cell;
-	}
-	
-	static change_cell = function(_new_cell/*:MapCell*/)/*->void*/ {
-		if (__cell != undefined) {
-			__cell.remove_object(self);
-		}
-		_new_cell.set_object(self);
-	}
-	
-	static get_type = function()/*->string*/ {
-		return __type;
-	}
-	
-	static destroy = function()/*->void*/ {
-		if (__cell != undefined) {
-			__cell.remove_object(self);
-		}
-	}
-}
-
-function Wall() : MapObject() constructor {
-	__type = "wall";
-}
-function Floor() : MapObject() constructor {
-	__type = "floor";
 }

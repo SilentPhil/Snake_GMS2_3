@@ -16,7 +16,7 @@
     {"id":{"name":"o_pub_sub_controller","path":"objects/o_pub_sub_controller/o_pub_sub_controller.yy",},"order":1,},
     {"id":{"name":"GameController","path":"scripts/GameController/GameController.yy",},"order":4,},
     {"id":{"name":"o_game","path":"objects/o_game/o_game.yy",},"order":0,},
-    {"id":{"name":"Apple","path":"scripts/Apple/Apple.yy",},"order":6,},
+    {"id":{"name":"MapObjects","path":"scripts/MapObjects/MapObjects.yy",},"order":6,},
     {"id":{"name":"array","path":"scripts/array/array.yy",},"order":7,},
     {"id":{"name":"StateMachine","path":"scripts/StateMachine/StateMachine.yy",},"order":8,},
     {"id":{"name":"AppleManager","path":"scripts/AppleManager/AppleManager.yy",},"order":9,},

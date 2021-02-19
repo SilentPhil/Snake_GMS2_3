@@ -2,40 +2,33 @@ function AppleManager(_map/*:Map*/) constructor {
 	__map = _map;							/// @is {Map}
 	__array_of_apples = []; 				/// @is {array<Apple>}
 	
-	static get_apple_by_position = function(_position/*:Vector*/)/*->Apple|undefined*/ {
-		for (var i = 0, size_i = array_length(__array_of_apples); i < size_i; i++) {
-			var apple/*:Apple*/ = __array_of_apples[i];
-			if (_position.equals(apple.get_position())) {
-				return apple;
+	static spawn_apple = function(_count/*:number*/)/*->void*/ {
+		var map_filter/*:MapFilter*/ = __map.__map_filter;
+		var map_filter_result/*:MapFilterResult*/ = map_filter.get_array_of_cells().including("floor").excluding("wall", "snake", "apple");
+		var array_of_free_cells = map_filter_result.get_result_arr();
+		
+		if (array_length(array_of_free_cells) > 0) {
+			repeat (_count) {
+				var random_cell/*:MapCell*/ = array_get_random(array_of_free_cells);
+				var apple/*:Apple*/ = new Apple();
+				random_cell.set_object(apple);
+				array_push(__array_of_apples, apple);
+				
+				array_delete_by_value(array_of_free_cells, random_cell);
 			}
 		}
 	}
-	
-	static spawn_apple = function()/*->void*/ {
-		
-		// var map:Map = _game_controller.__map;
-		// do {
-		// 	var i = irandom(map.get_width() - 1);
-		// 	var j = irandom(map.get_height() - 1);
-		// 	var cell_position:Vector = new Vector(i, j);
-		// 	var map_cell:CELL = map.get_cell(cell_position);
-		// } until (map_cell != CELL.WALL && self.get_apple_by_position(cell_position) == undefined && _game_controller.get_snake_by_position(cell_position) == undefined);
-		
-		// array_push(__array_of_apples, new Apple(cell_position));
-	}
 		
 	static destroy_apple = function(_apple/*:Apple*/)/*->void*/ {
+		_apple.destroy();
 		array_delete_by_value(__array_of_apples, _apple);
 	}
 	
 	static destroy_all_apples = function()/*->void*/ {
-		for (var i = 0, size_i = array_length(__array_of_apples); i < size_i; i++) {
-			var apple/*:Apple*/ = __array_of_apples[i];
-			self.destroy_apple(apple);
+		while (!array_empty(__array_of_apples)) {
+			var apple/*:Apple*/ = __array_of_apples[0];
+			apple.destroy();
+			array_delete(__array_of_apples, 0, 1);
 		}
 	}
-	
-	static get_array_of_apples = function()/*->array<Apple>*/ {
-		return __array_of_apples;
-	}	
 }

@@ -1,11 +1,10 @@
 function GameController() constructor {
-	__map	= new Map();						/// @is {Map}
-	__snake = undefined;						/// @is {Snake}
-	__apple_manager	= new AppleManager(__map);	/// @is {AppleManager}
+	__map			= new Map();						/// @is {Map}
+	__snake 		= undefined;						/// @is {Snake}
+	__apple_manager	= new AppleManager(__map);			/// @is {AppleManager}
 
 	__frames			= 0;
-	__game_speed		= 3;	// GameTick per Seconds
-	__is_borderless_map = true;
+	__game_speed		= 5;	// GameTick per Seconds
 	
 	pub_sub_subscribe(PS.event_snake_move, self);
 	
@@ -13,14 +12,14 @@ function GameController() constructor {
 		switch (_event) {
 			case PS.event_snake_move:
 				var snake_head_cell/*:MapCell*/ = _vars[0];
-				if (snake_head_cell.get_specific_object("wall") != undefined) {
+				if (snake_head_cell.get_specific_object("wall") != undefined || snake_head_cell.get_specific_object("snake") != undefined) {
 					self.restart();
 				} else {
 					var apple/*:Apple|undefined*/ = snake_head_cell.get_specific_object("apple");
 					if (apple != undefined) {
 						__snake.grow_up(1);
 						__apple_manager.destroy_apple((/*#cast*/ apple /*#as Apple*/));
-						__apple_manager.spawn_apple();
+						__apple_manager.spawn_apple(1);
 					}
 				}
 			break;
@@ -32,23 +31,14 @@ function GameController() constructor {
 		__snake = new Snake(self, start_cell, SIDE.RIGHT);
 
 		__snake.grow_up(3);
-		//__apple_manager.spawn_apple(self);
+		__apple_manager.spawn_apple(2);
 	}
 	
 	static restart = function()/*->void*/ {
 		__snake.destroy();
-		//__apple_manager.destroy_all_apples();
+		__apple_manager.destroy_all_apples();
 		
 		self.start();
-	}
-	
-	static get_snake_by_position = function(_position/*:Vector*/)/*->SnakeSegment|undefined*/ {
-		for (var i = 0, size_i = array_length(__snake.get_array_of_segments()); i < size_i; i++) {
-			var segment/*:SnakeSegment*/ = __snake.get_array_of_segments()[i];
-			if (_position.equals(segment.get_position())) {
-				return segment;
-			}
-		}
 	}
 
 	static get_side_cell = function(_cell/*:MapCell*/, _side/*:SIDE*/)/*->MapCell*/ {
@@ -71,20 +61,20 @@ function GameController() constructor {
 			break;
 		}
 		
-		if (__is_borderless_map) {
-			var new_vector/*:Vector*/ = _cell.get_position().add(shift_vector);
-			if (new_vector.x >= __map.get_width()) {
-				new_vector.x = 0;
-			} else if (new_vector.x < 0) {
-				new_vector.x = __map.get_width() - 1;
-			}
-			
-			if (new_vector.y >= __map.get_height()) {
-				new_vector.y = 0;
-			} else if (new_vector.y < 0) {
-				new_vector.y = __map.get_height() - 1;
-			}
+		#region Телепорт при пересечении карты
+		var new_vector/*:Vector*/ = _cell.get_position().add(shift_vector);
+		if (new_vector.x >= __map.get_width()) {
+			new_vector.x = 0;
+		} else if (new_vector.x < 0) {
+			new_vector.x = __map.get_width() - 1;
 		}
+		
+		if (new_vector.y >= __map.get_height()) {
+			new_vector.y = 0;
+		} else if (new_vector.y < 0) {
+			new_vector.y = __map.get_height() - 1;
+		}
+		#endregion
 		
 		var cell/*:MapCell|undefined*/ = __map.get_cell(new_vector.x, new_vector.y);
 		if (cell != undefined) {
@@ -93,8 +83,6 @@ function GameController() constructor {
 			throw("undefined side cell");
 		}
 	}
-	
-
 	
 	static game_tick = function()/*->void*/ {
 		var snake/*:Snake*/ = __snake;
