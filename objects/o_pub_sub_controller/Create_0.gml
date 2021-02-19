@@ -6,3 +6,4 @@ unsubscribers_list		= ds_list_create();
 __array_of_events		= [];
 		
 event_snake_move		= pub_sub_event_new("snake_move");
+event_snake_turn		= pub_sub_event_new("snake_turn");

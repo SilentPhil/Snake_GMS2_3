@@ -1,3 +1,11 @@
+/// @todo См. Ниже
+/*
+	Обработчик нажатий клавиш - управление змейкой
+	Обработчик звуков
+	Подсчет очков
+	Графооон!
+*/
+
 function GameController() constructor {
 	__map				= new Map();						/// @is {Map}
 	__apple_manager		= new AppleManager(__map);			/// @is {AppleManager}
@@ -5,7 +13,7 @@ function GameController() constructor {
 	__snake 			= undefined;						/// @is {Snake}
 
 	__frames			= 0;
-	__game_speed		= 5;	// GameTick per Seconds
+	__game_speed		= 4;	// GameTick per Seconds
 	
 	pub_sub_subscribe(PS.event_snake_move, self);
 	
@@ -32,7 +40,7 @@ function GameController() constructor {
 		__snake = new Snake(self, start_cell, SIDE.RIGHT);
 
 		__snake.grow_up(3);
-		__apple_manager.spawn_apple(2);
+		__apple_manager.spawn_apple(10);
 	}
 	
 	static restart = function()/*->void*/ {

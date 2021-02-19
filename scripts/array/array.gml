@@ -48,3 +48,10 @@ function log() {
 	}
 	show_debug_message(str);
 }
+
+function ds_list_delete_by_value(list, value) {
+	var index = ds_list_find_index(list, value);
+	if (index != -1) {
+		ds_list_delete(list, index);
+	}
+}

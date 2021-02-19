@@ -9,6 +9,17 @@ function Snake(_game_controller/*:GameController*/, _start_cell/*:MapCell*/, _or
 	
 	__is_destroyed = false;
 	
+	pub_sub_subscribe(PS.event_snake_turn, self);
+	
+	static pub_sub_perform = function(_event, _vars) {
+		switch (_event) {
+			case PS.event_snake_turn:
+				var side/*:SIDE*/ = _vars[0];
+				self.turn(side);
+			break;
+		}
+	}
+	
 	static move_ahead = function()/*->void*/ {
 		__orientation = __orientation_next_tick;
 		
@@ -55,6 +66,8 @@ function Snake(_game_controller/*:GameController*/, _start_cell/*:MapCell*/, _or
 			segment.destroy();
 		}
 		__is_destroyed = true;
+		
+		pub_sub_unsubscribe_all(self);
 	}
 	
 	static get_array_of_segments = function()/*->array<SnakeSegment>*/ {

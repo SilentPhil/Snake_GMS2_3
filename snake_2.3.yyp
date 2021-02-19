@@ -20,6 +20,7 @@
     {"id":{"name":"array","path":"scripts/array/array.yy",},"order":0,},
     {"id":{"name":"StateMachine","path":"scripts/StateMachine/StateMachine.yy",},"order":10,},
     {"id":{"name":"AppleManager","path":"scripts/AppleManager/AppleManager.yy",},"order":11,},
+    {"id":{"name":"InputController","path":"scripts/InputController/InputController.yy",},"order":10,},
   ],
   "Options": [
     {"name":"Amazon Fire","path":"options/amazonfire/options_amazonfire.yy",},
