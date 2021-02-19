@@ -1,4 +1,5 @@
-function AppleManager() constructor {
+function AppleManager(_map/*:Map*/) constructor {
+	__map = _map;							/// @is {Map}
 	__array_of_apples = []; 				/// @is {array<Apple>}
 	
 	static get_apple_by_position = function(_position/*:Vector*/)/*->Apple|undefined*/ {
@@ -10,17 +11,17 @@ function AppleManager() constructor {
 		}
 	}
 	
-	static spawn_apple = function(_game_controller/*:GameController*/)/*->void*/ {
+	static spawn_apple = function()/*->void*/ {
 		
-		var map/*:Map*/ = _game_controller.__map;
-		do {
-			var i = irandom(map.get_width() - 1);
-			var j = irandom(map.get_height() - 1);
-			var cell_position/*:Vector*/ = new Vector(i, j);
-			var map_cell/*:CELL*/ = map.get_cell(cell_position);
-		} until (map_cell != CELL.WALL && self.get_apple_by_position(cell_position) == undefined && _game_controller.get_snake_by_position(cell_position) == undefined);
+		// var map:Map = _game_controller.__map;
+		// do {
+		// 	var i = irandom(map.get_width() - 1);
+		// 	var j = irandom(map.get_height() - 1);
+		// 	var cell_position:Vector = new Vector(i, j);
+		// 	var map_cell:CELL = map.get_cell(cell_position);
+		// } until (map_cell != CELL.WALL && self.get_apple_by_position(cell_position) == undefined && _game_controller.get_snake_by_position(cell_position) == undefined);
 		
-		array_push(__array_of_apples, new Apple(cell_position));
+		// array_push(__array_of_apples, new Apple(cell_position));
 	}
 		
 	static destroy_apple = function(_apple/*:Apple*/)/*->void*/ {

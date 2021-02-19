@@ -17,3 +17,11 @@ function array_delete_by_value(arr, value) {
 		array_delete(arr, index, 1);
 	}
 }
+
+/// @arg arr
+/// @arg value
+function array_push_unique(arr, value) {
+	if (array_find_index(arr, value) == -1) {
+		array_push(arr, value);
+	}
+}

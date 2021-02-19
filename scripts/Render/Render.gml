@@ -15,34 +15,42 @@ function Render() constructor {
 		var map/*:Map*/ = GAME_CONTROLLER.get_map();
 		for (var i = 0, size_i = map.get_width(); i < size_i; i++) {
 			for (var j = 0, size_j = map.get_height(); j < size_j; j++) {
-				var cell_pos/*:Vector*/ 		= new Vector(i, j);
-				var cell/*:CELL*/				= map.get_cell(cell_pos);
-				var display_position/*:Vector*/ = self.pos_to_display_pos(cell_pos);
-				var subimg/*:number*/			= (cell == CELL.EMPTY ? 0 : 1);
+				var cell/*:MapCell*/ = map.get_cell(i, j);
 				
-				draw_sprite(s_map_cell, subimg, display_position.x, display_position.y);
+				var display_position/*:Vector*/ = self.pos_to_display_pos(cell.get_position());
+				var array_of_objects = cell.get_array_of_objects();
+				for (var k = 0, size_k = array_length(array_of_objects); k < size_k; k++) {
+					var map_object/*:MapObject*/ = array_of_objects[k];
+					var subimg/*:number*/;
+					var sprite_ind/*:sprite*/;
+					switch (map_object.get_type()) {
+						case "wall":
+							subimg = 1;
+							sprite_ind = s_map_cell;
+						break;
+						
+						case "floor":
+							subimg = 0;
+							sprite_ind = s_map_cell;
+						break;
+						
+						case "snake":
+							var snake_segment/*:SnakeSegment*/ = (/*#cast*/ map_object /*#as SnakeSegment*/);
+							subimg = (snake_segment.is_head() ? 0 : 1);
+							sprite_ind = s_snake_segment;
+						break;
+						
+						case "apple":
+							subimg = 0;
+							sprite_ind = s_apple;
+						break;
+					}
+					draw_sprite(sprite_ind, subimg, display_position.x, display_position.y);
+					//draw_text(display_position.x, display_position.y, string(array_length(cell.get_array_of_objects())));
+				}
 			}
 		}
-		
-		var array_of_apples/*:array<Apple>*/ = GAME_CONTROLLER.__apple_manager.get_array_of_apples();
-		for (var i = 0, size_i = array_length(array_of_apples); i < size_i; i++) {
-			var apple/*:Apple*/ = array_of_apples[i];
-			
-			var display_position/*:Vector*/ = self.pos_to_display_pos(apple.get_position());
-			draw_sprite(s_apple, 0, display_position.x, display_position.y);
-		}
-		
-		var snake/*:Snake*/ = GAME_CONTROLLER.get_snake();
-		if (snake != undefined) {
-			var array_of_segments/*:array<SnakeSegment>*/ = snake.get_array_of_segments();
-			for (var i = array_length(array_of_segments) - 1; i >= 0; i--) {
-				var segment/*:SnakeSegment*/ = array_of_segments[i];
-				
-				var subimg/*:number*/ = (segment.is_head() ? 0 : 1);
-				var display_position/*:Vector*/ = self.pos_to_display_pos(segment.get_position());
-				draw_sprite(s_snake_segment, subimg, display_position.x, display_position.y);
-			}
-		}
+	
 	}
 	
 }
@@ -53,7 +61,7 @@ function Render() constructor {
 function log() {
 	var str = "";
 	for (var i = 0; i < argument_count; i++) {
-		str += string(argument[0]) + "::";
+		str += string(argument[i]) + "::";
 	}
 	show_debug_message(str);
 }
