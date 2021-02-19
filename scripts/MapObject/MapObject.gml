@@ -1,4 +1,4 @@
-function MapObject() constructor {
+function MapObject() : RenderObject() constructor {
 	__cell = undefined;	/// @is {MapCell}
 	__type = "";
 	
@@ -26,12 +26,24 @@ function MapObject() constructor {
 
 function Apple() : MapObject() constructor {
 	__type = "apple";
+	
+	static draw = function(_position/*:Vector*/, _cell_size/*:number*/)/*->void*/ {
+		draw_sprite(s_apple, 0, _position.x, _position.y);
+	}
 }
 
 function Wall() : MapObject() constructor {
 	__type = "wall";
+	
+	static draw = function(_position/*:Vector*/, _cell_size/*:number*/)/*->void*/ {
+		draw_sprite(s_map_cell, 1, _position.x, _position.y);
+	}
 }
 
 function Floor() : MapObject() constructor {
 	__type = "floor";
+	
+	static draw = function(_position/*:Vector*/, _cell_size/*:number*/)/*->void*/ {
+		draw_sprite(s_map_cell, 0, _position.x, _position.y);
+	}	
 }

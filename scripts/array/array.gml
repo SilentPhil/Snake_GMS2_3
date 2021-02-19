@@ -35,3 +35,16 @@ function array_get_random(arr) {
 function array_empty(arr) {
 	return (array_length(arr) == 0);
 }
+
+
+
+
+/// @arg value
+/// @arg [value...]
+function log() {
+	var str = "";
+	for (var i = 0; i < argument_count; i++) {
+		str += string(argument[i]) + "::";
+	}
+	show_debug_message(str);
+}

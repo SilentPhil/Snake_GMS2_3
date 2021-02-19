@@ -1,7 +1,8 @@
 function GameController() constructor {
-	__map			= new Map();						/// @is {Map}
-	__snake 		= undefined;						/// @is {Snake}
-	__apple_manager	= new AppleManager(__map);			/// @is {AppleManager}
+	__map				= new Map();						/// @is {Map}
+	__apple_manager		= new AppleManager(__map);			/// @is {AppleManager}
+	__render			= new Render(__map);				/// @is {Render}
+	__snake 			= undefined;						/// @is {Snake}
 
 	__frames			= 0;
 	__game_speed		= 5;	// GameTick per Seconds
@@ -102,13 +103,7 @@ function GameController() constructor {
 		}
 	}
 	
-	static get_snake = function()/*->Snake|undefined*/ {
-		return __snake;
+	static get_render = function()/*->Render*/ {
+		return __render;
 	}
-	
-	static get_map = function()/*->Map*/ {
-		return __map;
-	}
-
-	
 }

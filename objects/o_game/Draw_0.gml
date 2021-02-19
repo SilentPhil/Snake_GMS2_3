@@ -1,3 +1,2 @@
 
-
-RENDER.draw();
+GAME_CONTROLLER.get_render().draw();

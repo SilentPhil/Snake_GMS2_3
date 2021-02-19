@@ -12,9 +12,8 @@ function Snake(_game_controller/*:GameController*/, _start_cell/*:MapCell*/, _or
 	static move_ahead = function()/*->void*/ {
 		__orientation = __orientation_next_tick;
 		
-		var head_segment/*:SnakeSegment*/ = __head_segment;
 		try {
-			var new_cell/*:MapCell*/ = __game_controller.get_side_cell(head_segment.get_cell(), __orientation);
+			var new_cell/*:MapCell*/ = __game_controller.get_side_cell(__head_segment.get_cell(), __orientation);
 		} catch (e) {
 			return;
 		}
@@ -28,7 +27,7 @@ function Snake(_game_controller/*:GameController*/, _start_cell/*:MapCell*/, _or
 
 			segment.change_cell(previous_segment.get_cell());
 		}
-		head_segment.change_cell(new_cell);
+		__head_segment.change_cell(new_cell);
 	}
 
 	static grow_up = function(_grow_strength/*:number*/)/*->void*/ {
@@ -70,6 +69,10 @@ function SnakeSegment(_is_head/*:bool*/) : MapObject() constructor {
 	static is_head = function() {
 		return __is_head;
 	}
+	
+	static draw = function(_position/*:Vector*/, _cell_size/*:number*/)/*->void*/ {
+		draw_sprite(s_snake_segment, self.is_head() ? 0 : 1, _position.x, _position.y);
+	}	
 }
 
 enum SIDE {
@@ -78,4 +81,3 @@ enum SIDE {
 	DOWN,
 	LEFT
 }
-

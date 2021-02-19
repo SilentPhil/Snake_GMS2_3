@@ -6,7 +6,7 @@
     "path": "folders/Scripts.yy",
   },
   "resourceVersion": "1.0",
-  "name": "MapObjects",
+  "name": "MapObject",
   "tags": [],
   "resourceType": "GMScript",
 }

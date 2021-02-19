@@ -2,8 +2,8 @@
   "isDnD": false,
   "isCompatibility": false,
   "parent": {
-    "name": "Scripts",
-    "path": "folders/Scripts.yy",
+    "name": "gml",
+    "path": "folders/Scripts/gml.yy",
   },
   "resourceVersion": "1.0",
   "name": "array",
