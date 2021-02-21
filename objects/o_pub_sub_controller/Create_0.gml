@@ -7,3 +7,4 @@ __array_of_events		= [];
 		
 event_snake_move		= pub_sub_event_new("snake_move");
 event_snake_turn		= pub_sub_event_new("snake_turn");
+event_snake_eat_apple	= pub_sub_event_new("snake_eat_apple");

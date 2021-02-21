@@ -1,6 +1,5 @@
 /// @todo См. Ниже
 /*
-	Обработчик нажатий клавиш - управление змейкой
 	Обработчик звуков
 	Подсчет очков
 	Графооон!
@@ -13,7 +12,7 @@ function GameController() constructor {
 	__snake 			= undefined;						/// @is {Snake}
 
 	__frames			= 0;
-	__game_speed		= 4;	// GameTick per Seconds
+	__game_speed		= 3;	// GameTick per Seconds
 	
 	pub_sub_subscribe(PS.event_snake_move, self);
 	
@@ -26,9 +25,9 @@ function GameController() constructor {
 				} else {
 					var apple/*:Apple|undefined*/ = snake_head_cell.get_specific_object("apple");
 					if (apple != undefined) {
-						__snake.grow_up(1);
-						__apple_manager.destroy_apple((/*#cast*/ apple /*#as Apple*/));
 						__apple_manager.spawn_apple(1);
+						__apple_manager.destroy_apple((/*#cast*/ apple /*#as Apple*/));
+						pub_sub_event_perform(PS.event_snake_eat_apple);
 					}
 				}
 			break;
@@ -39,8 +38,8 @@ function GameController() constructor {
 		var start_cell/*:MapCell*/ = __map.get_cell(1, 1);
 		__snake = new Snake(self, start_cell, SIDE.RIGHT);
 
-		__snake.grow_up(3);
-		__apple_manager.spawn_apple(10);
+		__snake.grow_up(2);
+		__apple_manager.spawn_apple(2);
 	}
 	
 	static restart = function()/*->void*/ {

@@ -6,6 +6,10 @@ function Vector(_x/*:number*/, _y/*:number*/) constructor {
 		return new Vector(x + _vector.x, y + _vector.y);
 	}
 	
+	static substract = function(_vector/*:Vector*/)/*->Vector*/ {
+		return new Vector(x - _vector.x, y - _vector.y);
+	}
+	
 	static equals = function(_vector/*:Vector*/)/*->bool*/ {
 		return (x == _vector.x && y == _vector.y);
 	}

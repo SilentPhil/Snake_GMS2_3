@@ -36,6 +36,15 @@ function array_empty(arr) {
 	return (array_length(arr) == 0);
 }
 
+/// @arg arr
+function array_get_last(arr) {
+	if (!array_empty(arr)) {
+		return arr[array_length(arr) - 1];
+	} else {
+		return undefined;
+	}
+}
+
 
 
 

@@ -1,3 +1,4 @@
+show_debug_overlay(true);
 instance_create_depth(0, 0, 0, o_pub_sub_controller);
 
 game_controller = new GameController(); /// @is {GameController}

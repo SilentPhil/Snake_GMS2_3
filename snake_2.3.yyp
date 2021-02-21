@@ -11,6 +11,7 @@
     {"id":{"name":"pub_sub_unsubscribe","path":"scripts/pub_sub_unsubscribe/pub_sub_unsubscribe.yy",},"order":2,},
     {"id":{"name":"pub_sub_event_perform","path":"scripts/pub_sub_event_perform/pub_sub_event_perform.yy",},"order":0,},
     {"id":{"name":"Map","path":"scripts/Map/Map.yy",},"order":4,},
+    {"id":{"name":"s_graphics","path":"sprites/s_graphics/s_graphics.yy",},"order":3,},
     {"id":{"name":"Render","path":"scripts/Render/Render.yy",},"order":5,},
     {"id":{"name":"s_snake_segment","path":"sprites/s_snake_segment/s_snake_segment.yy",},"order":0,},
     {"id":{"name":"o_pub_sub_controller","path":"objects/o_pub_sub_controller/o_pub_sub_controller.yy",},"order":1,},
@@ -21,6 +22,8 @@
     {"id":{"name":"StateMachine","path":"scripts/StateMachine/StateMachine.yy",},"order":10,},
     {"id":{"name":"AppleManager","path":"scripts/AppleManager/AppleManager.yy",},"order":11,},
     {"id":{"name":"InputController","path":"scripts/InputController/InputController.yy",},"order":10,},
+    {"id":{"name":"glsl_gfx","path":"shaders/glsl_gfx/glsl_gfx.yy",},"order":0,},
+    {"id":{"name":"glsl_blur","path":"shaders/glsl_blur/glsl_blur.yy",},"order":1,},
   ],
   "Options": [
     {"name":"Amazon Fire","path":"options/amazonfire/options_amazonfire.yy",},
