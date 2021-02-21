@@ -1,8 +1,7 @@
 function Render(_map/*:Map*/) constructor {
 	__map			= _map;										/// @is {Map}
 	__cell_size 	= 32;										/// @is {number}
-	__map_margin	= new Vector(32, 32);						/// @is {Vector}
-	__list_of_weak_ref_render_elements = ds_list_create();		/// @is {ds_list}
+	__map_margin	= new Vector(32, 100);						/// @is {Vector}
 	
 	__surf_objects		= noone;								/// @is {surface}
 	__surf_blur_1_pass	= noone;
@@ -16,11 +15,13 @@ function Render(_map/*:Map*/) constructor {
 	}
 	
 	static draw = function() {
+		var bg_color = c_black;
+		
 		if (!surface_exists(__surf_objects)) {
 			__surf_objects = surface_create(room_width, room_height);
 		}
 		surface_set_target(__surf_objects);
-			draw_clear_alpha(/*#*/0x080808, 1);
+			draw_clear_alpha(bg_color, 0);
 			
 			var map/*:Map*/ = __map;
 			for (var i = 0, size_i = map.get_width(); i < size_i; i++) {
@@ -36,8 +37,11 @@ function Render(_map/*:Map*/) constructor {
 				}
 			}
 		surface_reset_target();
+		
+		
 
-		var blur_strength	= 0.013;
+		#region glow
+		var blur_strength	= 0.012;
 		var blur_scale		= 0.25;
 		var blur_repeat		= 3;
 		
@@ -49,39 +53,57 @@ function Render(_map/*:Map*/) constructor {
 		}
 		
 		surface_set_target(__surf_blur_2_pass);
-			draw_clear_alpha(c_black, 0);
+			draw_clear_alpha(bg_color, 0);
 			draw_surface_ext(__surf_objects, 0, 0, blur_scale, blur_scale, 0, c_white, 1);
 		surface_reset_target();
 
-		repeat(blur_repeat) {
-			surface_set_target(__surf_blur_1_pass);
-				draw_clear_alpha(c_black, 0);
-				shader_set(glsl_blur);
-				shader_set_uniform_f(shader_get_uniform(glsl_blur, "u_vOffsetFactor"), 0, blur_strength);
+		shader_set(glsl_blur);
+			repeat(blur_repeat) {
+				surface_set_target(__surf_blur_1_pass);
+				 	draw_clear_alpha(bg_color, 0);
+				 	shader_set_uniform_f(shader_get_uniform(glsl_blur, "u_vOffsetFactor"), 0, blur_strength);
 			
-				draw_surface(__surf_blur_2_pass, 0, 0);
-			
-				shader_reset();
-			surface_reset_target();
-		
+				 	draw_surface(__surf_blur_2_pass, 0, 0);
+				surface_reset_target();
+		 
 
-			surface_set_target(__surf_blur_2_pass);
-				draw_clear_alpha(c_black, 0);
-				shader_set(glsl_blur);
-				shader_set_uniform_f(shader_get_uniform(glsl_blur, "u_vOffsetFactor"), blur_strength, 0);
+				surface_set_target(__surf_blur_2_pass);
+				 	draw_clear_alpha(c_black, 0);
+				 	shader_set_uniform_f(shader_get_uniform(glsl_blur, "u_vOffsetFactor"), blur_strength, 0);
 			
-				draw_surface(__surf_blur_1_pass, 0, 0);
-			
-				shader_reset();
-			surface_reset_target();
-		}
-	
+				 	draw_surface(__surf_blur_1_pass, 0, 0);
+				surface_reset_target();
+			}
+		shader_reset();
 		
-		draw_surface_ext(__surf_blur_2_pass, 0, 0, 1 / blur_scale, 1 / blur_scale, 0, make_color_rgb(255, 200, 200), 1);
+		var glow_color_blend			= make_color_rgb(255, 120, 120);
+		var glow_alpha					= 1.0;
+		
+		var glow_flicker_freq			= 20;
+		var glow_flicker_strength_min	= 0.2;
+		var glow_flicker_strength_max	= 0.3;
+		var glow_flicker_amount			= (1 + sin(2 * pi * ((current_time / 20 * glow_flicker_freq) % 100 / 100))) / 2;
+		var glow_flicker_alpha			= lerp(glow_flicker_strength_min, glow_flicker_strength_max, glow_flicker_amount);
+		#endregion glow
+		
+		
+		shader_set(glsl_scanlines);
+		var scanlines_shift_speed = 4;
+		shader_set_uniform_f(shader_get_uniform(glsl_scanlines, "u_fScanlinePhase"), -current_time / 1000 * scanlines_shift_speed, 0);
+		shader_set_uniform_f(shader_get_uniform(glsl_scanlines, "u_fScanlineFreq"),  160);
+		shader_set_uniform_f(shader_get_uniform(glsl_scanlines, "u_fDistortionStrength"), 2.9);
+		
+		draw_set_color(/*#*/0x1b1c1c);
+		draw_rectangle(0, 0, room_width, room_height, false);		
 		
 		gpu_set_blendmode(bm_max);
+		draw_surface_ext(__surf_blur_2_pass, 0, 0, 1 / blur_scale, 1 / blur_scale, 0, glow_color_blend, glow_alpha);
+		draw_surface_ext(__surf_blur_2_pass, 0, 0, 1 / blur_scale, 1 / blur_scale, 0, glow_color_blend, glow_flicker_alpha);
+		gpu_set_blendmode(bm_normal);			
+		
+		
 		draw_surface(__surf_objects, 0, 0);
-		gpu_set_blendmode(bm_normal);
+		shader_reset();
 	}
 }
 

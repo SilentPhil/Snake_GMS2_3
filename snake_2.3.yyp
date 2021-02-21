@@ -22,8 +22,9 @@
     {"id":{"name":"StateMachine","path":"scripts/StateMachine/StateMachine.yy",},"order":10,},
     {"id":{"name":"AppleManager","path":"scripts/AppleManager/AppleManager.yy",},"order":11,},
     {"id":{"name":"InputController","path":"scripts/InputController/InputController.yy",},"order":10,},
-    {"id":{"name":"glsl_gfx","path":"shaders/glsl_gfx/glsl_gfx.yy",},"order":0,},
+    {"id":{"name":"glsl_scanlines","path":"shaders/glsl_scanlines/glsl_scanlines.yy",},"order":0,},
     {"id":{"name":"glsl_blur","path":"shaders/glsl_blur/glsl_blur.yy",},"order":1,},
+    {"id":{"name":"glsl_test","path":"shaders/glsl_test/glsl_test.yy",},"order":2,},
   ],
   "Options": [
     {"name":"Amazon Fire","path":"options/amazonfire/options_amazonfire.yy",},
