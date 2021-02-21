@@ -1,6 +1,7 @@
 {
   "resources": [
     {"id":{"name":"Snake","path":"scripts/Snake/Snake.yy",},"order":2,},
+    {"id":{"name":"s_white_pixel","path":"sprites/s_white_pixel/s_white_pixel.yy",},"order":4,},
     {"id":{"name":"pub_sub_subscribe","path":"scripts/pub_sub_subscribe/pub_sub_subscribe.yy",},"order":1,},
     {"id":{"name":"pub_sub_unsubscribe_all","path":"scripts/pub_sub_unsubscribe_all/pub_sub_unsubscribe_all.yy",},"order":3,},
     {"id":{"name":"Vector","path":"scripts/Vector/Vector.yy",},"order":0,},

@@ -109,6 +109,7 @@ function SnakeSegment(_snake/*:Snake*/, _is_head/*:bool*/) : MapObject() constru
 	}
 	
 	static draw = function(_position/*:Vector*/, _cell_size/*:number*/)/*->void*/ {
+		var scale = _cell_size / 32;
 		var subimg;
 		if (__is_head) {
 			subimg = (__is_apple_ahead ? 17 : 3) + __orientation;
@@ -140,7 +141,7 @@ function SnakeSegment(_snake/*:Snake*/, _is_head/*:bool*/) : MapObject() constru
 				}
 			}
 		}
-		draw_sprite_ext(s_graphics, subimg, _position.x + _cell_size / 2, _position.y + _cell_size / 2, 1, 1, 0, /*#*/0x4cd0f8, 1);
+		draw_sprite_ext(s_graphics, subimg, _position.x + _cell_size / 2, _position.y + _cell_size / 2, scale, scale, 0, /*#*/0x4cd0f8, 1);
 		//draw_text(_position.x, _position.y, __is_apple_inside);
 	}	
 	

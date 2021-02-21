@@ -1,11 +1,12 @@
 function Render(_map/*:Map*/) constructor {
 	__map			= _map;										/// @is {Map}
-	__cell_size 	= 32;										/// @is {number}
-	__map_margin	= new Vector(32, 100);						/// @is {Vector}
+	__cell_size 	= 21;										/// @is {number}
+	__map_margin	= new Vector(34, 70);						/// @is {Vector}
 	
 	__surf_objects		= noone;								/// @is {surface}
 	__surf_blur_1_pass	= noone;
 	__surf_blur_2_pass	= noone;
+	__surf_bg			= noone;
 	
 	static pos_to_display_pos = function(_obj_position/*:Vector*/)/*->Vector*/ {
 		return new Vector(
@@ -14,14 +15,12 @@ function Render(_map/*:Map*/) constructor {
 						);
 	}
 	
-	static draw = function() {
-		var bg_color = c_black;
-		
+	static draw = function() {		
 		if (!surface_exists(__surf_objects)) {
 			__surf_objects = surface_create(room_width, room_height);
 		}
 		surface_set_target(__surf_objects);
-			draw_clear_alpha(bg_color, 0);
+			draw_clear_alpha(c_black, 0);
 			
 			var map/*:Map*/ = __map;
 			for (var i = 0, size_i = map.get_width(); i < size_i; i++) {
@@ -37,8 +36,8 @@ function Render(_map/*:Map*/) constructor {
 				}
 			}
 		surface_reset_target();
-		
-		
+	
+		var screen_ratio	= room_width / room_height;
 
 		#region glow
 		var blur_strength	= 0.012;
@@ -53,15 +52,15 @@ function Render(_map/*:Map*/) constructor {
 		}
 		
 		surface_set_target(__surf_blur_2_pass);
-			draw_clear_alpha(bg_color, 0);
+			draw_clear_alpha(c_black, 0);
 			draw_surface_ext(__surf_objects, 0, 0, blur_scale, blur_scale, 0, c_white, 1);
 		surface_reset_target();
 
 		shader_set(glsl_blur);
 			repeat(blur_repeat) {
 				surface_set_target(__surf_blur_1_pass);
-				 	draw_clear_alpha(bg_color, 0);
-				 	shader_set_uniform_f(shader_get_uniform(glsl_blur, "u_vOffsetFactor"), 0, blur_strength);
+				 	draw_clear_alpha(c_black, 0);
+				 	shader_set_uniform_f(shader_get_uniform(glsl_blur, "u_vOffsetFactor"), 0, blur_strength * screen_ratio * 1.2);
 			
 				 	draw_surface(__surf_blur_2_pass, 0, 0);
 				surface_reset_target();
@@ -86,15 +85,22 @@ function Render(_map/*:Map*/) constructor {
 		var glow_flicker_alpha			= lerp(glow_flicker_strength_min, glow_flicker_strength_max, glow_flicker_amount);
 		#endregion glow
 		
+		if (!surface_exists(__surf_bg)) {
+			__surf_bg = surface_create(room_width + 200, room_height + 200);
+		}	
+		surface_set_target(__surf_bg);
+			draw_clear_alpha(/*#*/0x1b1c1c, 1);
+		surface_reset_target();
 		
 		shader_set(glsl_scanlines);
 		var scanlines_shift_speed = 4;
 		shader_set_uniform_f(shader_get_uniform(glsl_scanlines, "u_fScanlinePhase"), -current_time / 1000 * scanlines_shift_speed, 0);
 		shader_set_uniform_f(shader_get_uniform(glsl_scanlines, "u_fScanlineFreq"),  160);
-		shader_set_uniform_f(shader_get_uniform(glsl_scanlines, "u_fDistortionStrength"), 2.9);
+		shader_set_uniform_f(shader_get_uniform(glsl_scanlines, "u_fDistortionStrength"), 11);
 		
-		draw_set_color(/*#*/0x1b1c1c);
-		draw_rectangle(0, 0, room_width, room_height, false);		
+		//draw_set_color(/*#*/0x1b1c1c);
+		draw_surface(__surf_bg, -100, -100);
+		//draw_sprite_stretched_ext(s_white_pixel, 0, -100, -100, room_width + 100, room_height + 100, /*#*/0x1b1c1c, 1);
 		
 		gpu_set_blendmode(bm_max);
 		draw_surface_ext(__surf_blur_2_pass, 0, 0, 1 / blur_scale, 1 / blur_scale, 0, glow_color_blend, glow_alpha);

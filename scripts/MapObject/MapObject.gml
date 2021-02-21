@@ -28,7 +28,8 @@ function Apple() : MapObject() constructor {
 	__type = "apple";
 	
 	static draw = function(_position/*:Vector*/, _cell_size/*:number*/)/*->void*/ {
-		draw_sprite_ext(s_graphics, 1, _position.x + _cell_size / 2, _position.y + _cell_size / 2, 1, 1, 0, /*#*/0x2d54dd, 1);
+		var scale = _cell_size / 32;
+		draw_sprite_ext(s_graphics, 1, _position.x + _cell_size / 2, _position.y + _cell_size / 2, scale, scale, 0, /*#*/0x2d54dd, 1);
 	}
 }
 
@@ -36,7 +37,8 @@ function Wall() : MapObject() constructor {
 	__type = "wall";
 	
 	static draw = function(_position/*:Vector*/, _cell_size/*:number*/)/*->void*/ {
-		draw_sprite_ext(s_graphics, 0, _position.x + _cell_size / 2, _position.y + _cell_size / 2, 1, 1, 0, /*#*/0x3783cc, 1);
+		var scale = _cell_size / 32;
+		draw_sprite_ext(s_graphics, 0, _position.x + _cell_size / 2, _position.y + _cell_size / 2, scale, scale, 0, /*#*/0x3783cc, 1);
 	}
 }
 
