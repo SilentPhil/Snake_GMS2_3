@@ -118,26 +118,26 @@ function SnakeSegment(_snake/*:Snake*/, _is_head/*:bool*/) : MapObject() constru
 			if (is_tail) {
 				subimg = 9 + array_of_segments[array_length(array_of_segments) - 2].get_orientation();
 			} else {
-				var segment_index/*:number*/			= array_find_index(array_of_segments, self);
-				var next_segment/*:SnakeSegment*/		= array_of_segments[segment_index - 1];
-				var previous_segment/*:SnakeSegment*/	= array_of_segments[segment_index + 1];
-				var next_segment_offset/*:Vector*/		= next_segment.get_cell().get_position().substract(self.get_cell().get_position());
-				var previous_segment_offset/*:Vector*/	= previous_segment.get_cell().get_position().substract(self.get_cell().get_position());
-				if (next_segment_offset.x == 1 && next_segment_offset.y == 0 && previous_segment_offset.x == 0 && previous_segment_offset.y == 1) ||
-			       (next_segment_offset.x == 0 && next_segment_offset.y == 1 && previous_segment_offset.x == 1 && previous_segment_offset.y == 0) {
-					subimg = __is_apple_inside ? 23 : 13;
-				} else if (next_segment_offset.x == 0  && next_segment_offset.y == 1 && previous_segment_offset.x == -1 && previous_segment_offset.y == 0) ||
-						  (next_segment_offset.x == -1 && next_segment_offset.y == 0 && previous_segment_offset.x == 0  && previous_segment_offset.y == 1) {
-					subimg = __is_apple_inside ? 24 : 14;
-				} else if (next_segment_offset.x == -1 && next_segment_offset.y == 0  && previous_segment_offset.x == 0  && previous_segment_offset.y == -1) ||
-						  (next_segment_offset.x == 0  && next_segment_offset.y == -1 && previous_segment_offset.x == -1 && previous_segment_offset.y == 0) {
-					subimg = __is_apple_inside ? 26 : 16;
-				} else if (next_segment_offset.x == 0  && next_segment_offset.y == -1 && previous_segment_offset.x == 1 && previous_segment_offset.y == 0) ||
-						  (next_segment_offset.x == 1 && next_segment_offset.y == 0 && previous_segment_offset.x == 0  && previous_segment_offset.y == -1) {
-					subimg = __is_apple_inside ? 25 : 15;
-				} else {
+				//var segment_index/*:number*/			= array_find_index(array_of_segments, self);
+				//var next_segment/*:SnakeSegment*/		= array_of_segments[segment_index - 1];
+				//var previous_segment/*:SnakeSegment*/	= array_of_segments[segment_index + 1];
+				//var next_segment_offset/*:Vector*/		= next_segment.get_cell().get_position().substract(self.get_cell().get_position());
+				//var previous_segment_offset/*:Vector*/	= previous_segment.get_cell().get_position().substract(self.get_cell().get_position());
+				//if (next_segment_offset.x == 1 && next_segment_offset.y == 0 && previous_segment_offset.x == 0 && previous_segment_offset.y == 1) ||
+			    //   (next_segment_offset.x == 0 && next_segment_offset.y == 1 && previous_segment_offset.x == 1 && previous_segment_offset.y == 0) {
+				//	subimg = __is_apple_inside ? 23 : 13;
+				//} else if (next_segment_offset.x == 0  && next_segment_offset.y == 1 && previous_segment_offset.x == -1 && previous_segment_offset.y == 0) ||
+				//		  (next_segment_offset.x == -1 && next_segment_offset.y == 0 && previous_segment_offset.x == 0  && previous_segment_offset.y == 1) {
+				//	subimg = __is_apple_inside ? 24 : 14;
+				//} else if (next_segment_offset.x == -1 && next_segment_offset.y == 0  && previous_segment_offset.x == 0  && previous_segment_offset.y == -1) ||
+				//		  (next_segment_offset.x == 0  && next_segment_offset.y == -1 && previous_segment_offset.x == -1 && previous_segment_offset.y == 0) {
+				//	subimg = __is_apple_inside ? 26 : 16;
+				//} else if (next_segment_offset.x == 0  && next_segment_offset.y == -1 && previous_segment_offset.x == 1 && previous_segment_offset.y == 0) ||
+				//		  (next_segment_offset.x == 1 && next_segment_offset.y == 0 && previous_segment_offset.x == 0  && previous_segment_offset.y == -1) {
+				//	subimg = __is_apple_inside ? 25 : 15;
+				//} else {
 					subimg = (__is_apple_inside ? 21 : 7) + __orientation % 2;
-				}
+				//}
 			}
 		}
 		draw_sprite_ext(s_graphics, subimg, _position.x, _position.y, _factor, _factor, 0, /*#*/0x4cd0f8, 1);

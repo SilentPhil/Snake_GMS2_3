@@ -14,14 +14,19 @@ function Render(_map/*:Map*/) constructor {
 	__surf_objects		= noone;			/// @is {surface}
 	__surf_blur_1_pass	= noone;			/// @is {surface}
 	__surf_blur_2_pass	= noone;			/// @is {surface}
-	__surf_bg			= noone;			/// @is {surface}
+	__surf_final		= noone;			/// @is {surface}
 	__is_gfx_distortion	= true;
 	__is_gfx			= true;
 	__is_show_debug		= true;
 	
-	__font				= font_add_sprite_ext(s_font, "ABCDEFGHIJKLMNOPQRSTUVWXYZ 1234567890_@!?#$%><()^*:;.,", false, 0);
+	__font				= font_add_sprite_ext(s_font, "ABCDEFGHIJKLMNOPQRSTUVWXYZ 1234567890_@!?#$%><()^*:;.,", false, 0);	/// @is {font}
 	
-	//application_surface_enable(false);
+	__color_bg			= /*#*/0x121212;
+	__color_hud			= /*#*/0x86b3d7;
+	
+	__hud_position		= new Vector(0, -2);
+	
+	application_surface_enable(false);
 	
 	
 	static pos_to_display_pos = function(_obj_position/*:Vector*/)/*->Vector*/ {
@@ -40,6 +45,7 @@ function Render(_map/*:Map*/) constructor {
 			
 			draw_set_halign(fa_left);
 			draw_set_valign(fa_top);
+			draw_set_alpha(1);
 			
 			gpu_set_tex_filter(false);
 			
@@ -57,10 +63,13 @@ function Render(_map/*:Map*/) constructor {
 				}
 			}
 			draw_set_font(__font);
-			draw_set_color(/*#*/0x86b3d7);
-			draw_text_transformed(__map_margin.x, 32, "99999", __symbol_factor, __symbol_factor, 0);
+			draw_set_color(__color_hud);
+			
+			var hud_position_y/*:number*/ = self.pos_to_display_pos(__hud_position).y;
+			draw_text_transformed(__map_margin.x, hud_position_y, "@@@@@", __symbol_factor, __symbol_factor, 0);
+			
 			draw_set_halign(fa_right);
-			draw_text_transformed(room_width - __map_margin.x, 34, "@@@@@", __symbol_factor, __symbol_factor, 0);
+			draw_text_transformed(room_width - __map_margin.x, hud_position_y, "99999", __symbol_factor, __symbol_factor, 0);
 			
 			gpu_set_tex_filter(true);
 			
@@ -72,7 +81,7 @@ function Render(_map/*:Map*/) constructor {
 			#region glow
 			var blur_strength	= 0.008; // 0.008; mac
 			var blur_scale		= 0.25;
-			var blur_repeat		= 3;
+			var blur_repeat		= 2;
 		
 			if (!surface_exists(__surf_blur_1_pass)) {
 				__surf_blur_1_pass = surface_create(room_width * blur_scale, room_height * blur_scale);
@@ -90,7 +99,7 @@ function Render(_map/*:Map*/) constructor {
 				repeat(blur_repeat) {
 					surface_set_target(__surf_blur_1_pass);
 					 	draw_clear_alpha(c_black, 0);
-					 	shader_set_uniform_f(shader_get_uniform(glsl_blur, "u_vOffsetFactor"), 0, blur_strength * screen_ratio * 1.2);
+					 	shader_set_uniform_f(shader_get_uniform(glsl_blur, "u_vOffsetFactor"), 0, blur_strength * screen_ratio);
 			
 					 	draw_surface(__surf_blur_2_pass, 0, 0);
 					surface_reset_target();
@@ -104,54 +113,49 @@ function Render(_map/*:Map*/) constructor {
 					surface_reset_target();
 				}
 			shader_reset();
-		
-			var glow_color_blend			= make_color_rgb(255, 120, 120);
-			var glow_alpha					= 1.0;
-		
-			var glow_flicker_freq			= 20;
-			var glow_flicker_strength_min	= 0.2;
-			var glow_flicker_strength_max	= 0.3;
-			var glow_flicker_amount			= (1 + sin(2 * pi * ((current_time / 20 * glow_flicker_freq) % 100 / 100))) / 2;
-			var glow_flicker_alpha			= lerp(glow_flicker_strength_min, glow_flicker_strength_max, glow_flicker_amount);
 			#endregion glow
 		
-			if (!surface_exists(__surf_bg)) {
-				__surf_bg = surface_create(__screen_width, __screen_height);
+			if (!surface_exists(__surf_final)) {
+				__surf_final = surface_create(__screen_width, __screen_height);
 			}	
-			surface_set_target(__surf_bg);
-				draw_clear_alpha(c_black, 0);
+			surface_set_target(__surf_final);
+				draw_clear_alpha(__color_bg, 1);
 			
-				draw_set_color(/*#*/0x1b1c1c);
-				draw_sprite_stretched_ext(s_white_pixel, 0, -100, -100, room_width + 100, room_height + 100, /*#*/0x1b1c1c, 1);
-			
+				#region draw glow
+				var glow_color_blend			= make_color_rgb(255, 110, 110);
+				var glow_alpha					= 0.85;
+		
+				var glow_flicker_freq			= 20;
+				var glow_flicker_strength_min	= 0.2;
+				var glow_flicker_strength_max	= 0.25;
+				var glow_flicker_amount			= (1 + sin(2 * pi * ((current_time / 20 * glow_flicker_freq) % 100 / 100))) / 2;
+				var glow_flicker_alpha			= lerp(glow_flicker_strength_min, glow_flicker_strength_max, glow_flicker_amount);
+				
 				gpu_set_blendmode(bm_max);
 				draw_surface_ext(__surf_blur_2_pass, 0, 0, 1 / blur_scale, 1 / blur_scale, 0, glow_color_blend, glow_alpha);
 				draw_surface_ext(__surf_blur_2_pass, 0, 0, 1 / blur_scale, 1 / blur_scale, 0, glow_color_blend, glow_flicker_alpha);
 				gpu_set_blendmode(bm_normal);			
+				#endregion draw glow
 		
 				draw_surface(__surf_objects, 0, 0);
 			surface_reset_target();
 		
+			#region scanlines && distortion
 			shader_set(glsl_scanlines);
-			var scanlines_shift_speed = 4;
+			var scanlines_freq			= 160;
+			var scanlines_shift_speed	= 4;
 			shader_set_uniform_f(shader_get_uniform(glsl_scanlines, "u_fScanlinePhase"), -current_time / 1000 * scanlines_shift_speed, 0);
-			shader_set_uniform_f(shader_get_uniform(glsl_scanlines, "u_fScanlineFreq"),  160);
+			shader_set_uniform_f(shader_get_uniform(glsl_scanlines, "u_fScanlineFreq"), scanlines_freq);
 			shader_set_uniform_f(shader_get_uniform(glsl_scanlines, "u_fDistortionEnabled"), __is_gfx_distortion);
 			shader_set_uniform_f(shader_get_uniform(glsl_scanlines, "u_fDistortionStrength"), 11);
 				
-			draw_surface(__surf_bg, 0, 0);
+			draw_surface(__surf_final, 0, 0);
 			shader_reset();
+			#endregion scanlines && distortion
 		} else {
-			//if (!surface_exists(__surf_bg)) {
-			//	__surf_bg = surface_create(room_width + 200, room_height + 200);
-			//}	
-			//surface_set_target(__surf_bg);
-			//	draw_clear_alpha(/*#*/0x1b1c1c, 1);
-			//surface_reset_target();
-			
+			draw_clear_alpha(__color_bg, 1);
 			draw_surface(__surf_objects, 0, 0);
 		}
-		
 		self.draw_debug();
 	}
 	
@@ -159,13 +163,19 @@ function Render(_map/*:Map*/) constructor {
 		show_debug_overlay(__is_show_debug);
 		if (__is_show_debug) {
 			
+			draw_set_alpha(1);
 			draw_set_font(__font);
 			draw_set_halign(fa_left);
 			draw_set_valign(fa_bottom);
 			draw_set_color(c_dkgray);
-			draw_text(10, __screen_height - 10,	"SHADERS IS COMPILED: " + "\n" +
+			draw_text(10, __screen_height - 10,	"SHADERS ARE SUPPORTED: " + string_bool(shaders_are_supported()) + "\n" +
+												"SHADERS ARE COMPILED: " + "\n" +
+												//"GLSL_PASS:      " + string_bool(shader_is_compiled(glsl_pass)) + "\n" +
 												"GLSL_BLUR:      " + string_bool(shader_is_compiled(glsl_blur)) + "\n" +
 												"GLSL_SCANLINES: " + string_bool(shader_is_compiled(glsl_scanlines)));
+												
+			draw_set_halign(fa_right);
+			draw_text(__screen_width - 10, __screen_height - 10, date_datetime_string(GM_build_date));
 		}
 		if (keyboard_check_pressed(ord("H"))) {
 			__is_gfx_distortion = !__is_gfx_distortion;

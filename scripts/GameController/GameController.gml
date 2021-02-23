@@ -12,7 +12,7 @@ function GameController() constructor {
 	__snake 			= undefined;						/// @is {Snake}
 
 	__frames			= 0;
-	__game_speed		= 3;	// GameTick per Seconds
+	__game_speed		= 1;	// GameTick per Seconds
 	
 	pub_sub_subscribe(PS.event_snake_move, self);
 	
