@@ -27,23 +27,21 @@ function MapObject() : RenderObject() constructor {
 function Apple() : MapObject() constructor {
 	__type = "apple";
 	
-	static draw = function(_position/*:Vector*/, _cell_size/*:number*/)/*->void*/ {
-		var scale = _cell_size / 32;
-		draw_sprite_ext(s_graphics, 1, _position.x + _cell_size / 2, _position.y + _cell_size / 2, scale, scale, 0, /*#*/0x2d54dd, 1);
+	static draw = function(_position/*:Vector*/, _factor/*:number*/)/*->void*/ {
+		draw_sprite_ext(s_graphics, 1, _position.x, _position.y, _factor, _factor, 0, /*#*/0x2d54dd, 1);
 	}
 }
 
 function Wall() : MapObject() constructor {
 	__type = "wall";
 	
-	static draw = function(_position/*:Vector*/, _cell_size/*:number*/)/*->void*/ {
-		var scale = _cell_size / 32;
-		draw_sprite_ext(s_graphics, 0, _position.x + _cell_size / 2, _position.y + _cell_size / 2, scale, scale, 0, /*#*/0x3783cc, 1);
+	static draw = function(_position/*:Vector*/, _factor/*:number*/)/*->void*/ {
+		draw_sprite_ext(s_graphics, 0, _position.x, _position.y, _factor, _factor, 0, /*#*/0x3783cc, 1);
 	}
 }
 
 function Floor() : MapObject() constructor {
 	__type = "floor";
 	
-	static draw = function(_position/*:Vector*/, _cell_size/*:number*/)/*->void*/ {}	
+	static draw = function(_position/*:Vector*/, _factor/*:number*/)/*->void*/ {}	
 }
