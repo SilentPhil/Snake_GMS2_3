@@ -11,6 +11,7 @@ function Snake(_game_controller/*:GameController*/, _start_cell/*:MapCell*/, _or
 	__is_eat_apple = false;
 	
 	pub_sub_subscribe(PS.event_snake_turn_order,	self);
+	pub_sub_subscribe(PS.event_snake_turn_clock,	self);
 	pub_sub_subscribe(PS.event_snake_eat_apple,		self);
 	
 	static pub_sub_perform = function(_event, _vars) {
@@ -18,6 +19,20 @@ function Snake(_game_controller/*:GameController*/, _start_cell/*:MapCell*/, _or
 			case PS.event_snake_turn_order:
 				var side/*:SIDE*/ = _vars[0];
 				self.turn(side);
+			break;
+			
+			case PS.event_snake_turn_clock:
+				var turn/*:TURN*/	= _vars[0];
+				var orientation = __orientation;
+				if (turn == TURN.CLOCKWISE) {
+					orientation = (orientation + 1) % 4;
+					log(orientation);
+				} else {
+					orientation--;
+					if (orientation < 0) orientation = 3;
+					log(orientation);
+				}
+				self.turn(orientation);
 			break;
 			
 			case PS.event_snake_eat_apple:
@@ -33,6 +48,7 @@ function Snake(_game_controller/*:GameController*/, _start_cell/*:MapCell*/, _or
 		try {
 			var new_cell/*:MapCell*/ = __game_controller.get_side_cell(__head_segment.get_cell(), __orientation);
 		} catch (e) {
+			log(e);
 			return;
 		}
 		
@@ -102,4 +118,8 @@ enum SIDE {
 	RIGHT,
 	DOWN,
 	LEFT
+}
+enum TURN {
+	CLOCKWISE,
+	COUNTERCLOCKWISE,
 }

@@ -6,7 +6,9 @@ unsubscribers_list		= ds_list_create();
 __array_of_events		= [];
 		
 event_snake_move		= pub_sub_event_new("snake_move");
+event_snake_turn_clock	= pub_sub_event_new("snake_turn_clock");
 event_snake_turn_order	= pub_sub_event_new("snake_turn_order");
 event_snake_turn		= pub_sub_event_new("snake_turn");
 event_snake_eat_apple	= pub_sub_event_new("snake_eat_apple");
 event_gesture_drag_end	= pub_sub_event_new("gesture_drag_end");
+event_gesture_tap		= pub_sub_event_new("gesture_tap");

@@ -40,10 +40,6 @@ function Wall() : MapObject() constructor {
 	}
 }
 
-function Floor() : MapObject() constructor {
-	__type = "floor";
-}
-
 function SnakeSegment(_snake/*:Snake*/, _is_head/*:bool*/) : MapObject() constructor {
 	__snake				= _snake;		/// @is {Snake}
 	__is_head			= _is_head;

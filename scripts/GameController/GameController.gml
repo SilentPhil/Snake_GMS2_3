@@ -8,11 +8,12 @@
 function GameController() constructor {
 	__map				= new Map();						/// @is {Map}
 	__apple_manager		= new AppleManager(__map);			/// @is {AppleManager}
-	__render			= new Render(__map);				/// @is {Render}
+	__render			= new Render(self);					/// @is {Render}
 	__snake 			= undefined;						/// @is {Snake}
 
 	__frames			= 0;
 	__game_speed		= 3;	// GameTick per Seconds
+	__scores			= 0;
 	
 	pub_sub_subscribe(PS.event_snake_move, self);
 	
@@ -27,6 +28,7 @@ function GameController() constructor {
 					if (apple != undefined) {
 						__apple_manager.spawn_apple(1);
 						__apple_manager.destroy_apple((/*#cast*/ apple /*#as Apple*/));
+						self.add_scores(10);
 						pub_sub_event_perform(PS.event_snake_eat_apple);
 					}
 				}
@@ -112,5 +114,13 @@ function GameController() constructor {
 	
 	static get_render = function()/*->Render*/ {
 		return __render;
+	}
+	
+	static add_scores = function(_value/*:number*/)/*->void*/ {
+		__scores += _value;
+	}
+	
+	static get_scores = function()/*->number*/ {
+		return __scores;
 	}
 }

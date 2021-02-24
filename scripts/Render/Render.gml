@@ -1,13 +1,14 @@
-function Render(_map/*:Map*/) constructor {
-	__map				= _map;				/// @is {Map}
-	__symbol_factor 	= 3;				/// @is {number}
+function Render(_game_controller/*:GameController*/) constructor {
+	__game_controller	= _game_controller;			/// @is {GameController}
+	__map				= __game_controller.__map;	/// @is {Map}
+	__symbol_factor 	= 3;						/// @is {number}
 	__symbol_size		= sprite_get_width(s_graphics);
 	__cell_size			= __symbol_size * __symbol_factor;
 	
 	__screen_width		= room_width;
 	__screen_height		= room_height;
-	__map_width			= _map.get_width();
-	__map_height		= _map.get_height();
+	__map_width			= __map.get_width();
+	__map_height		= __map.get_height();
 	__level_width_px	= __cell_size * __map_width;
 	__level_height_px	= __cell_size * __map_height;
 	
@@ -23,7 +24,7 @@ function Render(_map/*:Map*/) constructor {
 	
 	__font				= font_add_sprite_ext(s_font, "ABCDEFGHIJKLMNOPQRSTUVWXYZ 1234567890_@!?#$%><()^*:;.,", false, 0);	/// @is {font}
 	
-	__color_bg			= /*#*/0x121212;
+	__color_bg			= /*#*/0x1a1a1a;
 	__color_hud			= /*#*/0x86b3d7;
 	
 	__hud_position		= new Vector(0, -2);
@@ -73,7 +74,7 @@ function Render(_map/*:Map*/) constructor {
 			draw_text_transformed(__map_margin.x, hud_position_y, "@@@@@", __symbol_factor, __symbol_factor, 0);
 			
 			draw_set_halign(fa_right);
-			draw_text_transformed(room_width - __map_margin.x, hud_position_y, "99999", __symbol_factor, __symbol_factor, 0);
+			draw_text_transformed(room_width - __map_margin.x, hud_position_y, __game_controller.get_scores(), __symbol_factor, __symbol_factor, 0);
 			
 			gpu_set_tex_filter(true);
 			

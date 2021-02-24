@@ -16,10 +16,10 @@ function Map() constructor {
 	level_template[i++]	= [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1];
 	level_template[i++]	= [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
 
-	__map_filter = new MapFilter(self);		/// @is {MapFilter}
-	__array_of_cells = [];
-	__array_of_cells_one_dimensional = [];
-	__array_of_cells_with_objects = [];
+	__map_filter = new MapFilter(self);			/// @is {MapFilter}
+	__array_of_cells					= [];	/// @is {array<array<MapCell>>}
+	__array_of_cells_one_dimensional	= [];	/// @is {array<MapCell>}
+	__array_of_cells_with_objects		= [];	/// @is {array<MapCell>}
 	
 	for (var i = 0, size_i = array_length(level_template); i < size_i; i++) {
 		for (var j = 0, size_j = array_length(level_template[0]); j < size_j; j++) {
@@ -28,8 +28,6 @@ function Map() constructor {
 			array_push(__array_of_cells_one_dimensional, cell);
 			if (level_template[i][j] == 1) {
 				cell.set_object(new Wall());
-			} else {
-				cell.set_object(new Floor());
 			}
 		}
 	}
@@ -38,11 +36,7 @@ function Map() constructor {
 	__map_height	= array_length(__array_of_cells[0]);
 	
 	static get_cell = function(_x, _y)/*->MapCell|undefined*/ {
-		//if (point_in_rectangle(_x, _y, 0, 0, __map_width - 1, __map_height - 1))  {
-			return __array_of_cells[_x][_y];
-		// } else {
-		// 	return undefined;
-		// }
+		return __array_of_cells[_x][_y];
 	}
 	
 	static get_width = function()/*->number*/ {

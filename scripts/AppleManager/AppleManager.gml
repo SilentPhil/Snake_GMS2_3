@@ -4,7 +4,7 @@ function AppleManager(_map/*:Map*/) constructor {
 	
 	static spawn_apple = function(_count/*:number*/)/*->void*/ {
 		var map_filter/*:MapFilter*/ = __map.__map_filter;
-		var map_filter_result/*:MapFilterResult*/ = map_filter.get_array_of_cells().including("floor").excluding("wall", "snake", "apple");
+		var map_filter_result/*:MapFilterResult*/ = map_filter.get_array_of_cells().excluding("wall", "snake", "apple");
 		var array_of_free_cells = map_filter_result.get_result_arr();
 		
 		if (array_length(array_of_free_cells) > 0) {
