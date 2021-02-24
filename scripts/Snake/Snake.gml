@@ -10,12 +10,12 @@ function Snake(_game_controller/*:GameController*/, _start_cell/*:MapCell*/, _or
 	__is_destroyed = false;
 	__is_eat_apple = false;
 	
-	pub_sub_subscribe(PS.event_snake_turn,		self);
-	pub_sub_subscribe(PS.event_snake_eat_apple, self);
+	pub_sub_subscribe(PS.event_snake_turn_order,	self);
+	pub_sub_subscribe(PS.event_snake_eat_apple,		self);
 	
 	static pub_sub_perform = function(_event, _vars) {
 		switch (_event) {
-			case PS.event_snake_turn:
+			case PS.event_snake_turn_order:
 				var side/*:SIDE*/ = _vars[0];
 				self.turn(side);
 			break;
@@ -74,9 +74,11 @@ function Snake(_game_controller/*:GameController*/, _start_cell/*:MapCell*/, _or
 	}
 	
 	static turn = function(_side/*:SIDE*/)/*->void*/ {
-		var is_opposite_moving = (abs(__orientation - (/*#cast*/ _side)) == 2);
-		if (!is_opposite_moving) {
+		var is_opposite_moving			= (abs(__orientation - (/*#cast*/ _side)) == 2);
+		var is_same_orientation_moving	= (_side == __orientation_next_tick);
+		if (!is_opposite_moving && !is_same_orientation_moving) {
 			__orientation_next_tick = _side;
+			pub_sub_event_perform(PS.event_snake_turn);
 		}
 	}
 	
@@ -92,64 +94,6 @@ function Snake(_game_controller/*:GameController*/, _start_cell/*:MapCell*/, _or
 	
 	static get_array_of_segments = function()/*->array<SnakeSegment>*/ {
 		return __array_of_segments;
-	}
-}
-
-function SnakeSegment(_snake/*:Snake*/, _is_head/*:bool*/) : MapObject() constructor {
-	__snake				= _snake;		/// @is {Snake}
-	__is_head			= _is_head;
-	__orientation		= __snake.__orientation;
-	__is_apple_ahead	= false;
-	__is_apple_inside	= false;
-	
-	__type = "snake";
-	
-	static is_head = function() {
-		return __is_head;
-	}
-	
-	static draw = function(_position/*:Vector*/, _factor/*:number*/)/*->void*/ {
-		var subimg;
-		if (__is_head) {
-			subimg = (__is_apple_ahead ? 17 : 3) + __orientation;
-		} else {
-			var array_of_segments/*:array<SnakeSegment>*/ = __snake.get_array_of_segments();
-			var is_tail = (array_get_last(array_of_segments) == self);
-			if (is_tail) {
-				subimg = 9 + array_of_segments[array_length(array_of_segments) - 2].get_orientation();
-			} else {
-				//var segment_index/*:number*/			= array_find_index(array_of_segments, self);
-				//var next_segment/*:SnakeSegment*/		= array_of_segments[segment_index - 1];
-				//var previous_segment/*:SnakeSegment*/	= array_of_segments[segment_index + 1];
-				//var next_segment_offset/*:Vector*/		= next_segment.get_cell().get_position().substract(self.get_cell().get_position());
-				//var previous_segment_offset/*:Vector*/	= previous_segment.get_cell().get_position().substract(self.get_cell().get_position());
-				//if (next_segment_offset.x == 1 && next_segment_offset.y == 0 && previous_segment_offset.x == 0 && previous_segment_offset.y == 1) ||
-			    //   (next_segment_offset.x == 0 && next_segment_offset.y == 1 && previous_segment_offset.x == 1 && previous_segment_offset.y == 0) {
-				//	subimg = __is_apple_inside ? 23 : 13;
-				//} else if (next_segment_offset.x == 0  && next_segment_offset.y == 1 && previous_segment_offset.x == -1 && previous_segment_offset.y == 0) ||
-				//		  (next_segment_offset.x == -1 && next_segment_offset.y == 0 && previous_segment_offset.x == 0  && previous_segment_offset.y == 1) {
-				//	subimg = __is_apple_inside ? 24 : 14;
-				//} else if (next_segment_offset.x == -1 && next_segment_offset.y == 0  && previous_segment_offset.x == 0  && previous_segment_offset.y == -1) ||
-				//		  (next_segment_offset.x == 0  && next_segment_offset.y == -1 && previous_segment_offset.x == -1 && previous_segment_offset.y == 0) {
-				//	subimg = __is_apple_inside ? 26 : 16;
-				//} else if (next_segment_offset.x == 0  && next_segment_offset.y == -1 && previous_segment_offset.x == 1 && previous_segment_offset.y == 0) ||
-				//		  (next_segment_offset.x == 1 && next_segment_offset.y == 0 && previous_segment_offset.x == 0  && previous_segment_offset.y == -1) {
-				//	subimg = __is_apple_inside ? 25 : 15;
-				//} else {
-					subimg = (__is_apple_inside ? 21 : 7) + __orientation % 2;
-				//}
-			}
-		}
-		draw_sprite_ext(s_graphics, subimg, _position.x, _position.y, _factor, _factor, 0, /*#*/0x4cd0f8, 1);
-		//draw_text(_position.x, _position.y, __is_apple_inside);
-	}	
-	
-	static set_orientation = function(_orientation/*:SIDE*/)/*->void*/ {
-		__orientation = _orientation;
-	}
-	
-	static get_orientation = function()/*->SIDE*/ {
-		return __orientation;
 	}
 }
 

@@ -6,8 +6,10 @@ function Render(_map/*:Map*/) constructor {
 	
 	__screen_width		= room_width;
 	__screen_height		= room_height;
-	__level_width_px	= __cell_size * _map.get_width();
-	__level_height_px	= __cell_size * _map.get_height();
+	__map_width			= _map.get_width();
+	__map_height		= _map.get_height();
+	__level_width_px	= __cell_size * __map_width;
+	__level_height_px	= __cell_size * __map_height;
 	
 	__map_margin		= new Vector((__screen_width - __level_width_px) / 2, (__screen_height - __level_height_px) / 2); /// @is {Vector}
 
@@ -28,12 +30,12 @@ function Render(_map/*:Map*/) constructor {
 	
 	application_surface_enable(false);
 	
+	static map_x_to_display_x = function(_x/*:number*/)/*->number*/ {
+		return __map_margin.x + _x * __cell_size;
+	}
 	
-	static pos_to_display_pos = function(_obj_position/*:Vector*/)/*->Vector*/ {
-		return new Vector(
-							__map_margin.x + _obj_position.x * __cell_size, 
-							__map_margin.y + _obj_position.y * __cell_size
-						);
+	static map_y_to_display_y = function(_y/*:number*/)/*->number*/ {
+		return __map_margin.y + _y * __cell_size;
 	}
 	
 	static draw = function() {			
@@ -50,22 +52,24 @@ function Render(_map/*:Map*/) constructor {
 			gpu_set_tex_filter(false);
 			
 			var map/*:Map*/ = __map;
-			for (var i = 0, size_i = map.get_width(); i < size_i; i++) {
-				for (var j = 0, size_j = map.get_height(); j < size_j; j++) {
-					var cell/*:MapCell*/ = map.get_cell(i, j);
-					
-					var display_position/*:Vector*/ = self.pos_to_display_pos(cell.get_position());
-					var array_of_objects = cell.get_array_of_objects();
-					for (var k = 0, size_k = array_length(array_of_objects); k < size_k; k++) {
-						var map_object/*:MapObject*/ = array_of_objects[k];
-						map_object.draw(display_position, __symbol_factor);
-					}
+			var array_of_cells_with_objects/*:array<MapCell>*/ = map.get_array_of_cells_with_objects();
+			for (var i = 0, size_i = array_length(array_of_cells_with_objects); i < size_i; i++) {
+				var cell/*:MapCell*/ = array_of_cells_with_objects[i];
+				
+				var cell_position/*:Vector*/ = cell.get_position();
+				var draw_x = self.map_x_to_display_x(cell_position.x);
+				var draw_y = self.map_y_to_display_y(cell_position.y);
+				
+				var array_of_objects = cell.get_array_of_objects();
+				for (var k = 0, size_k = array_length(array_of_objects); k < size_k; k++) {
+					var map_object/*:MapObject*/ = array_of_objects[k];
+					map_object.draw(draw_x, draw_y, __symbol_factor);
 				}
 			}
 			draw_set_font(__font);
 			draw_set_color(__color_hud);
 			
-			var hud_position_y/*:number*/ = self.pos_to_display_pos(__hud_position).y;
+			var hud_position_y/*:number*/ = self.map_y_to_display_y(__hud_position.y);
 			draw_text_transformed(__map_margin.x, hud_position_y, "@@@@@", __symbol_factor, __symbol_factor, 0);
 			
 			draw_set_halign(fa_right);
@@ -147,7 +151,6 @@ function Render(_map/*:Map*/) constructor {
 			shader_set_uniform_f(shader_get_uniform(glsl_scanlines, "u_fScanlinePhase"), -current_time / 1000 * scanlines_shift_speed, 0);
 			shader_set_uniform_f(shader_get_uniform(glsl_scanlines, "u_fScanlineFreq"), scanlines_freq);
 			shader_set_uniform_f(shader_get_uniform(glsl_scanlines, "u_fDistortionEnabled"), __is_gfx_distortion);
-			shader_set_uniform_f(shader_get_uniform(glsl_scanlines, "u_fDistortionStrength"), 11);
 				
 			draw_surface(__surf_final, 0, 0);
 			shader_reset();
@@ -160,14 +163,21 @@ function Render(_map/*:Map*/) constructor {
 	}
 	
 	static draw_debug = function() {
-		show_debug_overlay(__is_show_debug);
+		//show_debug_overlay(__is_show_debug);
 		if (__is_show_debug) {
 			
 			draw_set_alpha(1);
 			draw_set_font(__font);
 			draw_set_halign(fa_left);
-			draw_set_valign(fa_bottom);
+			draw_set_valign(fa_top);
 			draw_set_color(c_dkgray);
+			
+			var fps_counter =	"FPS: " + string(fps) + "\n" +
+								"FPS REAL: " + string(fps_real);
+			draw_text(10, 10, fps_counter);
+			
+			
+			draw_set_valign(fa_bottom);
 			draw_text(10, __screen_height - 10,	"SHADERS ARE SUPPORTED: " + string_bool(shaders_are_supported()) + "\n" +
 												"SHADERS ARE COMPILED: " + "\n" +
 												//"GLSL_PASS:      " + string_bool(shader_is_compiled(glsl_pass)) + "\n" +
@@ -176,6 +186,8 @@ function Render(_map/*:Map*/) constructor {
 												
 			draw_set_halign(fa_right);
 			draw_text(__screen_width - 10, __screen_height - 10, date_datetime_string(GM_build_date));
+			
+			
 		}
 		if (keyboard_check_pressed(ord("H"))) {
 			__is_gfx_distortion = !__is_gfx_distortion;
@@ -191,5 +203,5 @@ function Render(_map/*:Map*/) constructor {
 }
 
 function RenderObject() constructor {
-	static draw = function(_position/*:Vector*/, _cell_size/*:number*/)/*->void*/ {}
+	static draw = function(_x/*:number*/, _y/*:number*/, _cell_size/*:number*/)/*->void*/ {}
 }

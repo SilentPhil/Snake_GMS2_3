@@ -19,7 +19,7 @@ function InputController() constructor {
 					} else {
 						diff_x = 0;
 					}
-					self.snake_move_order(dx, dy);
+					self.snake_move_order(diff_x, diff_y);
 				}
 			break;
 		}
@@ -35,11 +35,11 @@ function InputController() constructor {
 	static snake_move_order = function(_dx/*:number*/, _dy/*:number*/) {
 		if (_dx != 0 || _dy != 0) {
 			if (_dx != 0) {
-				var side/*:SIDE*/ = (_dx == 1 ? SIDE.RIGHT : SIDE.LEFT);
+				var side/*:SIDE*/ = (_dx > 0 ? SIDE.RIGHT : SIDE.LEFT);
 			} else if (_dy != 0) {
-				var side/*:SIDE*/ = (_dy == 1 ? SIDE.DOWN : SIDE.UP);
+				var side/*:SIDE*/ = (_dy > 0 ? SIDE.DOWN : SIDE.UP);
 			}
-			pub_sub_event_perform(PS.event_snake_turn, [side]);
+			pub_sub_event_perform(PS.event_snake_turn_order, [side]);
 		}
 	}
 }

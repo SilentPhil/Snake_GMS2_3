@@ -12,7 +12,7 @@ function GameController() constructor {
 	__snake 			= undefined;						/// @is {Snake}
 
 	__frames			= 0;
-	__game_speed		= 1;	// GameTick per Seconds
+	__game_speed		= 3;	// GameTick per Seconds
 	
 	pub_sub_subscribe(PS.event_snake_move, self);
 	
@@ -103,7 +103,7 @@ function GameController() constructor {
 	
 	static step = function()/*->void*/ {
 		__frames++;
-		var one_tick_in_frames = (room_speed / __game_speed);
+		var one_tick_in_frames = (game_get_speed(gamespeed_fps) / __game_speed);
 		if (__frames >= one_tick_in_frames) {
 			self.game_tick();
 			__frames = __frames - one_tick_in_frames;
