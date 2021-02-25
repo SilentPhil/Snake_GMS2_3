@@ -2,6 +2,28 @@ function AppleManager(_map/*:Map*/) constructor {
 	__map = _map;							/// @is {Map}
 	__array_of_apples = []; 				/// @is {array<Apple>}
 	
+	pub_sub_subscribe(PS.event_snake_eat_apple, self);
+	pub_sub_subscribe(PS.event_game_start,		self);
+	pub_sub_subscribe(PS.event_game_restart,	self);
+	
+	static pub_sub_perform = function(_event, _vars) {
+		switch (_event) {
+			case PS.event_snake_eat_apple:
+				var apple/*:Apple*/ = _vars[0];
+				self.spawn_apple(1);
+				self.destroy_apple(apple);
+			break;
+			
+			case PS.event_game_start:
+				self.spawn_apple(2);
+			break;	
+			
+			case PS.event_game_restart:
+				self.destroy_all_apples();
+			break;
+		}
+	}
+	
 	static spawn_apple = function(_count/*:number*/)/*->void*/ {
 		var map_filter/*:MapFilter*/ = __map.__map_filter;
 		var map_filter_result/*:MapFilterResult*/ = map_filter.get_array_of_cells().excluding("wall", "snake", "apple");
@@ -32,3 +54,4 @@ function AppleManager(_map/*:Map*/) constructor {
 		}
 	}
 }
+

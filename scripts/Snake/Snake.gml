@@ -7,7 +7,6 @@ function Snake(_game_controller/*:GameController*/, _start_cell/*:MapCell*/, _or
 	
 	_start_cell.set_object(__head_segment);	
 	
-	__is_destroyed = false;
 	__is_eat_apple = false;
 	
 	pub_sub_subscribe(PS.event_snake_turn_order,	self);
@@ -43,37 +42,45 @@ function Snake(_game_controller/*:GameController*/, _start_cell/*:MapCell*/, _or
 	}
 	
 	static move_ahead = function()/*->void*/ {
-		__orientation = __orientation_next_tick;
-		
 		try {
-			var new_cell/*:MapCell*/ = __game_controller.get_side_cell(__head_segment.get_cell(), __orientation);
+			var new_cell/*:MapCell*/			= __game_controller.get_side_cell(__head_segment.get_cell(), __orientation);
+			var new_cell_after_turn/*:MapCell*/ = __game_controller.get_side_cell(__head_segment.get_cell(), __orientation_next_tick);
 		} catch (e) {
 			log(e);
 			return;
 		}
 		
-		pub_sub_event_perform(PS.event_snake_move, [new_cell]);
-		if (__is_destroyed) return;
-		
-		for (var i = array_length(__array_of_segments) - 1; i > 0; i--) {
-			var segment/*:SnakeSegment*/			= __array_of_segments[i];
-			var previous_segment/*:SnakeSegment*/	= __array_of_segments[i - 1];
-
-			segment.change_cell(previous_segment.get_cell());
-			segment.set_orientation(previous_segment.get_orientation());
-			
-			segment.__is_apple_inside = previous_segment.__is_apple_inside;
-			previous_segment.__is_apple_inside = false;
+		if (__orientation != __orientation_next_tick && !__game_controller.is_snake_moving_kill(new_cell_after_turn)) {
+			__orientation = __orientation_next_tick;
+			new_cell = new_cell_after_turn;
 		}
-		__head_segment.change_cell(new_cell);
-		__head_segment.set_orientation(__orientation);
 		
-		var ahead_cell/*:MapCell*/ = __game_controller.get_side_cell(__head_segment.get_cell(), __orientation);
-		__head_segment.__is_apple_ahead = (ahead_cell.get_specific_object("apple") != undefined);
-		
-		if (__is_eat_apple) {
-			__is_eat_apple = false;
-			__head_segment.__is_apple_inside = true;
+		var is_can_move = __game_controller.snake_move(new_cell);
+		if (is_can_move) {
+			
+			// pub_sub_event_perform(PS.event_snake_move, [new_cell]);
+			// if (__is_destroyed) return;
+			
+			for (var i = array_length(__array_of_segments) - 1; i > 0; i--) {
+				var segment/*:SnakeSegment*/			= __array_of_segments[i];
+				var previous_segment/*:SnakeSegment*/	= __array_of_segments[i - 1];
+	
+				segment.change_cell(previous_segment.get_cell());
+				segment.set_orientation(previous_segment.get_orientation());
+				
+				segment.__is_apple_inside = previous_segment.__is_apple_inside;
+				previous_segment.__is_apple_inside = false;
+			}
+			__head_segment.change_cell(new_cell);
+			__head_segment.set_orientation(__orientation);
+			
+			var ahead_cell/*:MapCell*/ = __game_controller.get_side_cell(__head_segment.get_cell(), __orientation);
+			__head_segment.__is_apple_ahead = (ahead_cell.get_specific_object("apple") != undefined);
+			
+			if (__is_eat_apple) {
+				__is_eat_apple = false;
+				__head_segment.__is_apple_inside = true;
+			}
 		}
 	}
 
@@ -103,8 +110,7 @@ function Snake(_game_controller/*:GameController*/, _start_cell/*:MapCell*/, _or
 			var segment/*:SnakeSegment*/ = __array_of_segments[i];
 			segment.destroy();
 		}
-		__is_destroyed = true;
-		
+
 		pub_sub_unsubscribe_all(self);
 	}
 	

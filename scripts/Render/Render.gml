@@ -1,7 +1,8 @@
 function Render(_game_controller/*:GameController*/) constructor {
-	__game_controller	= _game_controller;			/// @is {GameController}
-	__map				= __game_controller.__map;	/// @is {Map}
-	__symbol_factor 	= 3;						/// @is {number}
+	__game_controller	= _game_controller;						/// @is {GameController}
+	__scores_manager	= _game_controller.__scores_manager;	/// @is {ScoresManager}
+	__map				= _game_controller.__map;				/// @is {Map}
+	__symbol_factor 	= 3;									/// @is {number}
 	__symbol_size		= sprite_get_width(s_graphics);
 	__cell_size			= __symbol_size * __symbol_factor;
 	
@@ -74,7 +75,7 @@ function Render(_game_controller/*:GameController*/) constructor {
 			draw_text_transformed(__map_margin.x, hud_position_y, "@@@@@", __symbol_factor, __symbol_factor, 0);
 			
 			draw_set_halign(fa_right);
-			draw_text_transformed(room_width - __map_margin.x, hud_position_y, __game_controller.get_scores(), __symbol_factor, __symbol_factor, 0);
+			draw_text_transformed(room_width - __map_margin.x, hud_position_y, __scores_manager.get_display_scores(), __symbol_factor, __symbol_factor, 0);
 			
 			gpu_set_tex_filter(true);
 			

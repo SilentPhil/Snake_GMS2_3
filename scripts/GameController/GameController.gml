@@ -8,46 +8,42 @@
 function GameController() constructor {
 	__map				= new Map();						/// @is {Map}
 	__apple_manager		= new AppleManager(__map);			/// @is {AppleManager}
+	__scores_manager	= new ScoresManager();				/// @is {ScoresManager}
 	__render			= new Render(self);					/// @is {Render}
 	__snake 			= undefined;						/// @is {Snake}
 
 	__frames			= 0;
 	__game_speed		= 3;	// GameTick per Seconds
-	__scores			= 0;
-	
-	pub_sub_subscribe(PS.event_snake_move, self);
-	
-	static pub_sub_perform = function(_event, _vars) {
-		switch (_event) {
-			case PS.event_snake_move:
-				var snake_head_cell/*:MapCell*/ = _vars[0];
-				if (snake_head_cell.get_specific_object("wall") != undefined || snake_head_cell.get_specific_object("snake") != undefined) {
-					self.restart();
-				} else {
-					var apple/*:Apple|undefined*/ = snake_head_cell.get_specific_object("apple");
-					if (apple != undefined) {
-						__apple_manager.spawn_apple(1);
-						__apple_manager.destroy_apple((/*#cast*/ apple /*#as Apple*/));
-						self.add_scores(10);
-						pub_sub_event_perform(PS.event_snake_eat_apple);
-					}
-				}
-			break;
+
+	static snake_move = function(snake_head_cell/*:MapCell*/)/*->bool*/ {
+		if (self.is_snake_moving_kill(snake_head_cell)) {
+			self.restart();
+			return false;
+		} else {
+			var apple/*:Apple|undefined*/ = snake_head_cell.get_specific_object("apple");
+			if (apple != undefined) {
+				pub_sub_event_perform(PS.event_snake_eat_apple, [apple]);
+			}
+			return true;
 		}
+	}
+	
+	static is_snake_moving_kill = function(snake_head_cell/*:MapCell*/)/*->bool*/ {
+		return (snake_head_cell.get_specific_object("wall") != undefined || snake_head_cell.get_specific_object("snake") != undefined);
 	}
 	
 	static start = function()/*->void*/ {
 		var start_cell/*:MapCell*/ = __map.get_cell(1, 1);
 		__snake = new Snake(self, start_cell, SIDE.RIGHT);
-
 		__snake.grow_up(2);
-		__apple_manager.spawn_apple(2);
+		
+		pub_sub_event_perform(PS.event_game_start);
 	}
 	
 	static restart = function()/*->void*/ {
 		__snake.destroy();
-		__apple_manager.destroy_all_apples();
 		
+		pub_sub_event_perform(PS.event_game_restart);
 		self.start();
 	}
 
@@ -95,8 +91,7 @@ function GameController() constructor {
 	}
 	
 	static game_tick = function()/*->void*/ {
-		var snake/*:Snake*/ = __snake;
-		snake.move_ahead();
+		__snake.move_ahead();
 	}
 	
 	static change_game_speed = function(_value/*:number*/)/*->void*/ {
@@ -110,17 +105,11 @@ function GameController() constructor {
 			self.game_tick();
 			__frames = __frames - one_tick_in_frames;
 		}
+		
+		__scores_manager.step();
 	}
 	
-	static get_render = function()/*->Render*/ {
-		return __render;
-	}
-	
-	static add_scores = function(_value/*:number*/)/*->void*/ {
-		__scores += _value;
-	}
-	
-	static get_scores = function()/*->number*/ {
-		return __scores;
+	static draw = function()/*->void*/ {
+		__render.draw();
 	}
 }

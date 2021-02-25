@@ -24,6 +24,7 @@
     {"id":{"name":"InputController","path":"scripts/InputController/InputController.yy",},"order":10,},
     {"id":{"name":"glsl_scanlines","path":"shaders/glsl_scanlines/glsl_scanlines.yy",},"order":0,},
     {"id":{"name":"glsl_blur","path":"shaders/glsl_blur/glsl_blur.yy",},"order":1,},
+    {"id":{"name":"ScoresManager","path":"scripts/ScoresManager/ScoresManager.yy",},"order":11,},
   ],
   "Options": [
     {"name":"Amazon Fire","path":"options/amazonfire/options_amazonfire.yy",},
