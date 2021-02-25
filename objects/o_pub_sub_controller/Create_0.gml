@@ -12,6 +12,7 @@ event_snake_turn		= pub_sub_event_new("snake_turn");
 event_snake_eat_apple	= pub_sub_event_new("snake_eat_apple");
 event_gesture_drag_end	= pub_sub_event_new("gesture_drag_end");
 event_gesture_tap		= pub_sub_event_new("gesture_tap");
+event_gesture_dragging	= pub_sub_event_new("gesture_dragging");
 
 event_game_start		= pub_sub_event_new("game_start");
 event_game_restart		= pub_sub_event_new("game_restart");

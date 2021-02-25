@@ -1,3 +1,4 @@
+/// @description	tap
 var pos_x = event_data[? "posX"];
 var pos_y = event_data[? "posY"];
 
