@@ -10,7 +10,7 @@ function GameController() constructor {
 	__apple_manager		= new AppleManager(__map);			/// @is {AppleManager}
 	__scores_manager	= new ScoresManager();				/// @is {ScoresManager}
 	__render			= new Render(self);					/// @is {Render}
-	__snake 			= undefined;						/// @is {Snake}
+	__snake 			= undefined;						/// @is {Snake|undefined}
 
 	__frames			= 0;
 	__game_speed		= 3;	// GameTick per Seconds
@@ -27,7 +27,6 @@ function GameController() constructor {
 			return true;
 		}
 	}
-	
 	static is_snake_moving_kill = function(snake_head_cell/*:MapCell*/)/*->bool*/ {
 		return (snake_head_cell.get_specific_object("wall") != undefined || snake_head_cell.get_specific_object("snake") != undefined);
 	}

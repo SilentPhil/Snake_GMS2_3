@@ -1,5 +1,5 @@
 function MapObject() : RenderObject() constructor {
-	__cell = undefined;	/// @is {MapCell}
+	__cell = undefined;	/// @is {MapCell|undefined}
 	__type = "";
 	
 	static get_cell = function()/*->MapCell|undefined*/ {
@@ -41,8 +41,8 @@ function Wall() : MapObject() constructor {
 }
 
 function SnakeSegment(_snake/*:Snake*/, _is_head/*:bool*/) : MapObject() constructor {
-	__snake				= _snake;		/// @is {Snake}
-	__is_head			= _is_head;
+	__snake				= _snake;					/// @is {Snake}
+	__is_head			= _is_head;					/// @is {bool}
 	__orientation		= __snake.__orientation;
 	__is_apple_ahead	= false;
 	__is_apple_inside	= false;

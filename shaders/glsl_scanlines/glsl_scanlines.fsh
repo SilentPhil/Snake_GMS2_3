@@ -25,9 +25,6 @@ void main() {
 	#define PI 3.14
 	#define distortion_strength 15.0
 	vec2 texcoord_distortion = distortion(v_vTexcoord, distortion_strength);
-	//if (texcoord_distortion.x < 0.0 || texcoord_distortion.x > 1.0 || texcoord_distortion.y < 0.0 || texcoord_distortion.y > 1.0) {
-	//	discard;
-	//}
 
 	vec4 color = v_vColour * texture2D(gm_BaseTexture, texcoord_distortion);
 	color.a = 1.0;

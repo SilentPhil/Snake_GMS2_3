@@ -55,7 +55,7 @@ function Map() constructor {
 function MapFilter(_map/*:Map*/) constructor {
 	__map = _map;
 	
-	static get_array_of_cells = function()/*->MapFilterResult*/ {
+	static result = function()/*->MapFilterResult*/ {
 		return new MapFilterResult(__map);
 	}
 }

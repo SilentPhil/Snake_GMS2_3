@@ -1,15 +1,16 @@
-view_init(DEVICE.IPAD);
+view_init(DEVICE.IPHONE_7);
 
 instance_create_depth(0, 0, 0, o_pub_sub_controller);
+
 randomize();
 gml_release_mode(true);
 display_set_timing_method(tm_sleep);
 game_set_speed(30, gamespeed_fps);
 
-game_controller = new GameController(); /// @is {GameController}
-#macro GAME_CONTROLLER o_game.game_controller
+game_controller 	= new GameController(); /// @is {GameController}
+input_controller	= new InputController(); /// @is {InputController}
 
-input_controller = new InputController(); /// @is {InputController}
+#macro GAME_CONTROLLER	o_game.game_controller
 #macro INPUT_CONTROLLER o_game.input_controller
 
 GAME_CONTROLLER.start();

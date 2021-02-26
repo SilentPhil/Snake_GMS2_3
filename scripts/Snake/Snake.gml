@@ -2,12 +2,15 @@ function Snake(_game_controller/*:GameController*/, _start_cell/*:MapCell*/, _or
 	__game_controller		= _game_controller;				/// @is {GameController}
 	__orientation			= _orientation;					/// @is {SIDE}
 	__orientation_next_tick	= _orientation;					/// @is {SIDE}
+	__orientation_keeper	= 0;	// Сколько ходов сохраняется поворот в "смертельную" сторону
 	__head_segment			= new SnakeSegment(self, true);	/// @is {SnakeSegment}
 	__array_of_segments 	= [__head_segment];				/// @is {array<SnakeSegment>}
 	
 	_start_cell.set_object(__head_segment);	
 	
 	__is_eat_apple = false;
+	
+	
 	
 	pub_sub_subscribe(PS.event_snake_turn_order,	self);
 	pub_sub_subscribe(PS.event_snake_turn_clock,	self);
@@ -53,14 +56,15 @@ function Snake(_game_controller/*:GameController*/, _start_cell/*:MapCell*/, _or
 		if (__orientation != __orientation_next_tick && !__game_controller.is_snake_moving_kill(new_cell_after_turn)) {
 			__orientation = __orientation_next_tick;
 			new_cell = new_cell_after_turn;
+		} else {
+			__orientation_keeper--;
+			if (__orientation_keeper <= 0) {
+				__orientation_next_tick = __orientation;
+			}
 		}
 		
 		var is_can_move = __game_controller.snake_move(new_cell);
 		if (is_can_move) {
-			
-			// pub_sub_event_perform(PS.event_snake_move, [new_cell]);
-			// if (__is_destroyed) return;
-			
 			for (var i = array_length(__array_of_segments) - 1; i > 0; i--) {
 				var segment/*:SnakeSegment*/			= __array_of_segments[i];
 				var previous_segment/*:SnakeSegment*/	= __array_of_segments[i - 1];
@@ -101,6 +105,7 @@ function Snake(_game_controller/*:GameController*/, _start_cell/*:MapCell*/, _or
 		var is_same_orientation_moving	= (_side == __orientation_next_tick);
 		if (!is_opposite_moving && !is_same_orientation_moving) {
 			__orientation_next_tick = _side;
+			__orientation_keeper	= 3;
 			pub_sub_event_perform(PS.event_snake_turn);
 		}
 	}

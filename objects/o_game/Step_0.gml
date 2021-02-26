@@ -1,3 +1,2 @@
-
 INPUT_CONTROLLER.step();
 GAME_CONTROLLER.step();
