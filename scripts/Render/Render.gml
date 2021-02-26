@@ -25,7 +25,7 @@ function Render(_game_controller/*:GameController*/) constructor {
 	
 	__font				= font_add_sprite_ext(s_font, "ABCDEFGHIJKLMNOPQRSTUVWXYZ 1234567890_@!?#$%><()^*:;.,", false, 0);	/// @is {font}
 	
-	__color_bg			= /*#*/0x1a1a1a;
+	__color_bg			= /*#*/0x181818;
 	__color_hud			= /*#*/0x86b3d7;
 	
 	__hud_position		= new Vector(0, -2);
@@ -146,8 +146,8 @@ function Render(_game_controller/*:GameController*/) constructor {
 		
 			#region scanlines && distortion
 			shader_set(glsl_scanlines);
-			var scanlines_freq			= 160;
-			var scanlines_shift_speed	= 0.5;
+			var scanlines_freq			= 180;
+			var scanlines_shift_speed	= 0.3;
 			shader_set_uniform_f(shader_get_uniform(glsl_scanlines, "u_fScanlinePhase"), -current_time / 1000 * scanlines_shift_speed);
 			shader_set_uniform_f(shader_get_uniform(glsl_scanlines, "u_fScanlineFreq"), scanlines_freq);
 			shader_set_uniform_f(shader_get_uniform(glsl_scanlines, "u_fDistortionEnabled"), __is_gfx_distortion);

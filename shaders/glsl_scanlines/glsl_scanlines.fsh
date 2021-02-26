@@ -33,8 +33,11 @@ void main() {
 	color.a = 1.0;
 	
 	// Short scanlines
-	#define scanlines_strength	0.24
-	color.rgb -= scanlines_strength * (color.r + color.g + color.b) / 3.0 * (1.0 + sin(texcoord_distortion.y * 2.0 * PI * u_fScanlineFreq + u_fScanlinePhase * 10.0)) / 2.0;
+	#define scanlines_strength			0.082
+	#define scanlines_duty_factor		0.5
+	#define scanlines_duty_smoothstep	0.34
+	float scanlines_value = (1.0 + sin(texcoord_distortion.y * 2.0 * PI * u_fScanlineFreq + u_fScanlinePhase * 10.0)) / 2.0;
+	color.rgb -= scanlines_strength * mix(0.17, 3.0, (color.r + color.g + color.b) / 3.0 - 0.1) * smoothstep(scanlines_duty_factor - scanlines_duty_smoothstep, scanlines_duty_factor + scanlines_duty_smoothstep, scanlines_value);
 	
 	// // Wide scanlines
 	#define scanlines_wide_freq				4.0
