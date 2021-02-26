@@ -6,10 +6,10 @@ function InputController() constructor {
 	__array_of_touch_process	= array_create(10, undefined);	/// @is {array<TouchStruct>}
 	__array_of_touch_start		= array_create(10, undefined);	/// @is {array<TouchStruct>}
 	
-	__drag_thrashold_distance = 30;
+	__drag_thrashold_distance = 25;
 	
-	gesture_drag_time(0.03);
-	gesture_drag_distance(0.03);
+	gesture_drag_time(0.001);
+	gesture_drag_distance(0.001);
 	
 	pub_sub_subscribe(PS.event_gesture_drag_end, self);
 	pub_sub_subscribe(PS.event_gesture_dragging, self);
@@ -17,6 +17,7 @@ function InputController() constructor {
 	static pub_sub_perform = function(_event, _vars) {
 		switch (_event) {
 			case PS.event_gesture_drag_end:
+				self.step();
 				__array_of_touch_process	= array_create(10, undefined);
 				__array_of_touch_start		= array_create(10, undefined);
 			// 	var diff_x = _vars[0];
@@ -68,8 +69,6 @@ function InputController() constructor {
 			
 			var diff_x = touch_process.x - touch_start.x;
 			var diff_y = touch_process.y - touch_start.y;
-			
-			//log(diff_x, diff_y);
 			
 			if (max(abs(diff_x), abs(diff_y)) >= __drag_thrashold_distance) {
 				__array_of_touch_process[@ i]	= undefined;
