@@ -1,3 +1,5 @@
+view_init(DEVICE.IPAD);
+
 instance_create_depth(0, 0, 0, o_pub_sub_controller);
 gml_release_mode(true);
 display_set_timing_method(tm_sleep);

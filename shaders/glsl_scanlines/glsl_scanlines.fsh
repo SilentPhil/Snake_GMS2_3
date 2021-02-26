@@ -5,7 +5,6 @@ uniform float u_fScanlinePhase;
 uniform float u_fScanlineFreq;
 uniform float u_fDistortionEnabled;
 
-
 precision highp float;
 
 vec2 distortion(vec2 coord, float bend) {
@@ -18,9 +17,7 @@ vec2 distortion(vec2 coord, float bend) {
 
 		// transform back to 0.0 - 1.0 space
 		coord  = (coord / 2.0) + 0.5;
-		
 	}
-
 	return coord;
 }
 
@@ -37,15 +34,16 @@ void main() {
 	
 	// Short scanlines
 	#define scanlines_strength	0.24
-	color.rgb -= scanlines_strength * (color.r + color.g + color.b) / 3.0 * (1.0 + sin(texcoord_distortion.y * 2.0 * PI * u_fScanlineFreq + u_fScanlinePhase)) / 2.0;
+	color.rgb -= scanlines_strength * (color.r + color.g + color.b) / 3.0 * (1.0 + sin(texcoord_distortion.y * 2.0 * PI * u_fScanlineFreq + u_fScanlinePhase * 10.0)) / 2.0;
 	
 	// // Wide scanlines
-	// #define scanlines_wide_freq				4.0
-	// #define scanlines_wide_duty_factor		0.2
-	// #define scanlines_wide_duty_smoothstep	0.1
-	// #define scanlines_wide_strength			0.1
-	// #define scanlines_wide_speed_factor		0.125
-	// color.rgb *= 1.0 + scanlines_wide_strength * smoothstep(scanlines_wide_duty_factor - scanlines_wide_duty_smoothstep, scanlines_wide_duty_factor + scanlines_wide_duty_smoothstep, (1.0 + sin(texcoord_distortion.y * 2.0 * PI * scanlines_wide_freq + u_fScanlinePhase * scanlines_wide_speed_factor)) / 2.0);
+	#define scanlines_wide_freq				4.0
+	#define scanlines_wide_duty_factor		0.6
+	#define scanlines_wide_duty_smoothstep	0.1
+	#define scanlines_wide_strength			0.07
+	#define scanlines_wide_speed_factor		1.0
+	float wave_value = (1.0 + sin(texcoord_distortion.y * 2.0 * PI * scanlines_wide_freq + u_fScanlinePhase * scanlines_wide_speed_factor) + sin(texcoord_distortion.y * 2.0 * PI * scanlines_wide_freq * 0.5 + u_fScanlinePhase * 1.44 * scanlines_wide_speed_factor)) / 2.0;
+	color.rgb *= 1.0 + scanlines_wide_strength * smoothstep(scanlines_wide_duty_factor - scanlines_wide_duty_smoothstep, scanlines_wide_duty_factor + scanlines_wide_duty_smoothstep, wave_value);
 	
 	gl_FragColor = color;
 }

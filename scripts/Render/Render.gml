@@ -2,12 +2,12 @@ function Render(_game_controller/*:GameController*/) constructor {
 	__game_controller	= _game_controller;						/// @is {GameController}
 	__scores_manager	= _game_controller.__scores_manager;	/// @is {ScoresManager}
 	__map				= _game_controller.__map;				/// @is {Map}
-	__symbol_factor 	= 3;									/// @is {number}
+	__symbol_factor 	= 4.7;									/// @is {number}
 	__symbol_size		= sprite_get_width(s_graphics);
 	__cell_size			= __symbol_size * __symbol_factor;
 	
-	__screen_width		= room_width;
-	__screen_height		= room_height;
+	__screen_width		= global.view_w;
+	__screen_height		= global.view_h;
 	__map_width			= __map.get_width();
 	__map_height		= __map.get_height();
 	__level_width_px	= __cell_size * __map_width;
@@ -30,8 +30,6 @@ function Render(_game_controller/*:GameController*/) constructor {
 	
 	__hud_position		= new Vector(0, -2);
 	
-	application_surface_enable(false);
-	
 	static map_x_to_display_x = function(_x/*:number*/)/*->number*/ {
 		return __map_margin.x + _x * __cell_size;
 	}
@@ -42,7 +40,7 @@ function Render(_game_controller/*:GameController*/) constructor {
 	
 	static draw = function() {			
 		if (!surface_exists(__surf_objects)) {
-			__surf_objects = surface_create(room_width, room_height);
+			__surf_objects = surface_create(__screen_width, __screen_height);
 		}
 		surface_set_target(__surf_objects);
 			draw_clear_alpha(c_black, 0);
@@ -68,6 +66,8 @@ function Render(_game_controller/*:GameController*/) constructor {
 					map_object.draw(draw_x, draw_y, __symbol_factor);
 				}
 			}
+			
+			
 			draw_set_font(__font);
 			draw_set_color(__color_hud);
 			
@@ -75,25 +75,23 @@ function Render(_game_controller/*:GameController*/) constructor {
 			draw_text_transformed(__map_margin.x, hud_position_y, "@@@@@", __symbol_factor, __symbol_factor, 0);
 			
 			draw_set_halign(fa_right);
-			draw_text_transformed(room_width - __map_margin.x, hud_position_y, __scores_manager.get_display_scores(), __symbol_factor, __symbol_factor, 0);
+			draw_text_transformed(__screen_width - __map_margin.x, hud_position_y, __scores_manager.get_display_scores(), __symbol_factor, __symbol_factor, 0);
 			
 			gpu_set_tex_filter(true);
 			
 		surface_reset_target();
-	
-		var screen_ratio	= room_width / room_height;
-
+		
 		if (__is_gfx) {
 			#region glow
-			var blur_strength	= 0.008; // 0.008; mac
+			var blur_strength	= 0.008 / global.scale_factor;
 			var blur_scale		= 0.25;
 			var blur_repeat		= 2;
 		
 			if (!surface_exists(__surf_blur_1_pass)) {
-				__surf_blur_1_pass = surface_create(room_width * blur_scale, room_height * blur_scale);
+				__surf_blur_1_pass = surface_create(__screen_width * blur_scale, __screen_height * blur_scale);
 			}		
 			if (!surface_exists(__surf_blur_2_pass)) {
-				__surf_blur_2_pass = surface_create(room_width * blur_scale, room_height * blur_scale);
+				__surf_blur_2_pass = surface_create(__screen_width * blur_scale, __screen_height * blur_scale);
 			}
 		
 			surface_set_target(__surf_blur_2_pass);
@@ -105,7 +103,7 @@ function Render(_game_controller/*:GameController*/) constructor {
 				repeat(blur_repeat) {
 					surface_set_target(__surf_blur_1_pass);
 					 	draw_clear_alpha(c_black, 0);
-					 	shader_set_uniform_f(shader_get_uniform(glsl_blur, "u_vOffsetFactor"), 0, blur_strength * screen_ratio);
+					 	shader_set_uniform_f(shader_get_uniform(glsl_blur, "u_vOffsetFactor"), 0, blur_strength * global.screen_ratio);
 			
 					 	draw_surface(__surf_blur_2_pass, 0, 0);
 					surface_reset_target();
@@ -149,8 +147,8 @@ function Render(_game_controller/*:GameController*/) constructor {
 			#region scanlines && distortion
 			shader_set(glsl_scanlines);
 			var scanlines_freq			= 160;
-			var scanlines_shift_speed	= 4;
-			shader_set_uniform_f(shader_get_uniform(glsl_scanlines, "u_fScanlinePhase"), -current_time / 1000 * scanlines_shift_speed, 0);
+			var scanlines_shift_speed	= 0.5;
+			shader_set_uniform_f(shader_get_uniform(glsl_scanlines, "u_fScanlinePhase"), -current_time / 1000 * scanlines_shift_speed);
 			shader_set_uniform_f(shader_get_uniform(glsl_scanlines, "u_fScanlineFreq"), scanlines_freq);
 			shader_set_uniform_f(shader_get_uniform(glsl_scanlines, "u_fDistortionEnabled"), __is_gfx_distortion);
 				
@@ -167,7 +165,13 @@ function Render(_game_controller/*:GameController*/) constructor {
 	static draw_debug = function() {
 		//show_debug_overlay(__is_show_debug);
 		if (__is_show_debug) {
+			gpu_set_texfilter(false);
 			
+			draw_set_color(c_black);
+			draw_rectangle(0, 0, global.view_w, global.screen_shift_top, false);
+			draw_rectangle(0, global.view_h - global.screen_shift_bottom, global.view_w, global.view_h, false);	
+			
+			var debug_text_scale = 1.7;
 			draw_set_alpha(1);
 			draw_set_font(__font);
 			draw_set_halign(fa_left);
@@ -176,19 +180,25 @@ function Render(_game_controller/*:GameController*/) constructor {
 			
 			var fps_counter =	"FPS: " + string(fps) + "\n" +
 								"FPS REAL: " + string(fps_real);
-			draw_text(10, 10, fps_counter);
+			draw_text_transformed(10, global.screen_shift_top + 10, fps_counter, debug_text_scale, debug_text_scale, 0);
 			
 			
 			draw_set_valign(fa_bottom);
-			draw_text(10, __screen_height - 10,	"SHADERS ARE SUPPORTED: " + string_bool(shaders_are_supported()) + "\n" +
-												"SHADERS ARE COMPILED: " + "\n" +
-												//"GLSL_PASS:      " + string_bool(shader_is_compiled(glsl_pass)) + "\n" +
-												"GLSL_BLUR:      " + string_bool(shader_is_compiled(glsl_blur)) + "\n" +
-												"GLSL_SCANLINES: " + string_bool(shader_is_compiled(glsl_scanlines)));
+			draw_text_transformed(10, __screen_height - 10 - global.screen_shift_bottom,	
+										"SHADERS ARE SUPPORTED: " + string_bool(shaders_are_supported()) + "\n" +
+										"SHADERS ARE COMPILED: " + "\n" +
+										//"GLSL_PASS:      " + string_bool(shader_is_compiled(glsl_pass)) + "\n" +
+										"GLSL_BLUR:      " + string_bool(shader_is_compiled(glsl_blur)) + "\n" +
+										"GLSL_SCANLINES: " + string_bool(shader_is_compiled(glsl_scanlines)), 
+										debug_text_scale, debug_text_scale, 0);
 												
 			draw_set_halign(fa_right);
-			draw_text(__screen_width - 10, __screen_height - 10, date_datetime_string(GM_build_date));
 			
+			var build_date = GM_build_date;
+			draw_text_transformed(__screen_width - 10, __screen_height - 10 - global.screen_shift_bottom, 
+										date_build_string(GM_build_date), debug_text_scale, debug_text_scale, 0);
+			
+			gpu_set_texfilter(true);
 			
 		}
 		if (keyboard_check_pressed(ord("H"))) {

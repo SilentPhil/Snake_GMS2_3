@@ -15,6 +15,7 @@
     {"id":{"name":"o_pub_sub_controller","path":"objects/o_pub_sub_controller/o_pub_sub_controller.yy",},"order":1,},
     {"id":{"name":"GameController","path":"scripts/GameController/GameController.yy",},"order":6,},
     {"id":{"name":"o_game","path":"objects/o_game/o_game.yy",},"order":0,},
+    {"id":{"name":"ex_safe_area","path":"extensions/ex_safe_area/ex_safe_area.yy",},"order":0,},
     {"id":{"name":"MapObject","path":"scripts/MapObject/MapObject.yy",},"order":8,},
     {"id":{"name":"array","path":"scripts/array/array.yy",},"order":0,},
     {"id":{"name":"StateMachine","path":"scripts/StateMachine/StateMachine.yy",},"order":10,},
@@ -25,6 +26,9 @@
     {"id":{"name":"glsl_scanlines","path":"shaders/glsl_scanlines/glsl_scanlines.yy",},"order":0,},
     {"id":{"name":"glsl_blur","path":"shaders/glsl_blur/glsl_blur.yy",},"order":1,},
     {"id":{"name":"ScoresManager","path":"scripts/ScoresManager/ScoresManager.yy",},"order":11,},
+    {"id":{"name":"view_init","path":"scripts/view_init/view_init.yy",},"order":1,},
+    {"id":{"name":"screen_get_safe_area","path":"scripts/screen_get_safe_area/screen_get_safe_area.yy",},"order":0,},
+    {"id":{"name":"date","path":"scripts/date/date.yy",},"order":2,},
   ],
   "Options": [
     {"name":"Amazon Fire","path":"options/amazonfire/options_amazonfire.yy",},
@@ -64,6 +68,7 @@
     {"folderPath":"folders/Scripts/pub_sub.yy","order":9,"resourceVersion":"1.0","name":"pub_sub","tags":[],"resourceType":"GMFolder",},
     {"folderPath":"folders/Scripts/gml.yy","order":1,"resourceVersion":"1.0","name":"gml","tags":[],"resourceType":"GMFolder",},
     {"folderPath":"folders/Scripts/math.yy","order":2,"resourceVersion":"1.0","name":"math","tags":[],"resourceType":"GMFolder",},
+    {"folderPath":"folders/Scripts/screen settings.yy","order":12,"resourceVersion":"1.0","name":"screen settings","tags":[],"resourceType":"GMFolder",},
   ],
   "AudioGroups": [
     {"targets":-1,"resourceVersion":"1.3","name":"audiogroup_default","resourceType":"GMAudioGroup",},

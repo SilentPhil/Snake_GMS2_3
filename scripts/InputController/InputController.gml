@@ -87,7 +87,7 @@ function InputController() constructor {
 		// 	var tap_x = mouse_x;
 		// 	var tap_y = mouse_y;
 			
-		// 	var turn:TURN = ((tap_x > room_width / 2) ? TURN.CLOCKWISE : TURN.COUNTERCLOCKWISE);
+		// 	var turn:TURN = ((tap_x > global.view_w / 2) ? TURN.CLOCKWISE : TURN.COUNTERCLOCKWISE);
 		// 	pub_sub_event_perform(PS.event_snake_turn_clock, [turn]);
 		// }		
 	}
