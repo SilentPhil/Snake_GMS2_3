@@ -16,6 +16,8 @@ var i = 0;
 while (i < ds_list_size(PS.unsubscribers_list)) {
 	var unsubscribers	= PS.unsubscribers_list[| i];
 	var event_arr		= PS.__array_of_events[unsubscribers[0]];
-	ds_list_delete_by_value(event_arr[EVENT_ACCESS.SUBSCRIBERS_LIST], unsubscribers[1]);	
+	if (ds_list_delete_by_value(event_arr[EVENT_ACCESS.SUBSCRIBERS_LIST], unsubscribers[1])) {
+		log("unsubscribe!", event_arr[EVENT_ACCESS.CAPTION]);
+	}	
 	ds_list_delete(PS.unsubscribers_list, i);
 }

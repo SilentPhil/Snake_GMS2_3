@@ -7,7 +7,7 @@ function pub_sub_subscribe() {
 	
 	var event_arr	= PS.__array_of_events[event_index];
 	ds_list_add_unique(event_arr[EVENT_ACCESS.SUBSCRIBERS_LIST], pub_sub_listener);
-
+	log("subscribe!", event_arr[EVENT_ACCESS.CAPTION]);
 	
 	//var subscriber_mask;
 	//var subscriber_index	= ds_list_find_index(PS.subscribers_list, id);

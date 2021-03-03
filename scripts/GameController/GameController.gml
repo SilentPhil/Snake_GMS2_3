@@ -14,6 +14,7 @@ function GameController() constructor {
 
 	__frames			= 0;
 	__game_speed		= 3;	// GameTick per Seconds
+	__is_paused			= true;
 
 	static snake_move = function(snake_head_cell/*:MapCell*/)/*->bool*/ {
 		if (self.is_snake_moving_kill(snake_head_cell)) {
@@ -97,7 +98,13 @@ function GameController() constructor {
 		__game_speed = clamp(__game_speed + _value, 1, 20);
 	}
 	
+	static set_pause = function(_is_paused/*:bool*/)/*->void*/ {
+		__is_paused = _is_paused;
+	}
+	
 	static step = function()/*->void*/ {
+		if (__is_paused) exit;
+		
 		__frames++;
 		var one_tick_in_frames = (game_get_speed(gamespeed_fps) / __game_speed);
 		if (__frames >= one_tick_in_frames) {

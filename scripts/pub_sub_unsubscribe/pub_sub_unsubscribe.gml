@@ -6,6 +6,7 @@ function pub_sub_unsubscribe() {
 	var event_index			= argument[0];
 	var pub_sub_listener	= argument_count > 1 ? argument[1] : id;	
 	//var event_arr	= PS.__array_of_events[event_index];
+	var event_arr	= PS.__array_of_events[event_index];
 	
 	ds_list_add_unique(PS.unsubscribers_list, [event_index, pub_sub_listener]);
 }

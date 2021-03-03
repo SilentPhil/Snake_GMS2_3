@@ -23,8 +23,6 @@ function Render(_game_controller/*:GameController*/) constructor {
 	__is_gfx			= true;
 	__is_show_debug		= true;
 	
-	__font				= font_add_sprite_ext(s_font, "ABCDEFGHIJKLMNOPQRSTUVWXYZ 1234567890_@!?#$%><()^*:;.,", false, 0);	/// @is {font}
-	
 	__color_bg			= /*#*/0x181818;
 	__color_hud			= /*#*/0x86b3d7;
 	
@@ -68,7 +66,7 @@ function Render(_game_controller/*:GameController*/) constructor {
 			}
 			
 			
-			draw_set_font(__font);
+			draw_set_font(global.font);
 			draw_set_color(__color_hud);
 			
 			var hud_position_y/*:number*/ = self.map_y_to_display_y(__hud_position.y);
@@ -173,7 +171,7 @@ function Render(_game_controller/*:GameController*/) constructor {
 			
 			var debug_text_scale = 1.7;
 			draw_set_alpha(1);
-			draw_set_font(__font);
+			draw_set_font(global.font);
 			draw_set_halign(fa_left);
 			draw_set_valign(fa_top);
 			draw_set_color(c_dkgray);

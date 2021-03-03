@@ -9,7 +9,7 @@ function pub_sub_event_perform() {
 	var event_arr	= PS.__array_of_events[event_index];
 	var sub_list	= event_arr[EVENT_ACCESS.SUBSCRIBERS_LIST];
 
-	//log("PS", "Event Perform", event_arr[EVENT_ACCESS.CAPTION], vars);
+	//log("PS", "Event Perform", event_arr[EVENT_ACCESS.CAPTION]);
 
 	for (var i = 0, size = ds_list_size(sub_list); i < size; i++) {
 		var subscriber_id = sub_list[| i];

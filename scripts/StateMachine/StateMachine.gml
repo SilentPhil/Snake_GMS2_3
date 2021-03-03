@@ -1,41 +1,65 @@
 function StateMachine() constructor {
-	enum STATE_MACHINE_RESULT {
-		IN_PROCESS,
-		END,
-	}
-	
 	__states = {};				/// @is {struct<State>}
 	__current_state = "";		/// @is {string}
+	__state_links = {};			/// @is {struct<string>}
 	
 	static add_state = function(_state_name/*:string*/, _state_instance/*:State*/)/*->void*/ {
 		__states[$ _state_name] = _state_instance;
 	}
 
-	static state_start = function(_state_name/*:string*/)/*->void*/ {
+	static initial_state = function(_state_name/*:string*/)/*->void*/ {
 		__current_state = _state_name;
-		var current_state_function = __states[$ __current_state];
-		log(__current_state);
-		current_state_function.start();
+	}
+	
+	static switch_to_state = function(_state_name/*:string*/)/*->void*/ {
+		var switch_path = [];	/// @is {array<string>}
+		var search_state_name = __current_state;
+		while (search_state_name != _state_name) {
+			array_push(switch_path, search_state_name);
+			
+			search_state_name = __state_links[$ search_state_name];
+			if (search_state_name == undefined) {
+				throw (string(_state_name) + " has no link with " + string(__current_state));
+			}
+			array_push(switch_path, search_state_name);
+		}
+
+		var current_state_function/*:State*/ = __states[$ __current_state];
+		current_state_function.finish();
+		for (var i = 1, size_i = array_length(switch_path) - 1; i < size_i; i++) {
+			var next_state_function/*:State*/ = __states[$ switch_path[i]];
+			next_state_function.start();
+			next_state_function.finish();
+		}
+		__current_state = array_get_last(switch_path);
+		var target_state_function/*:State*/ = __states[$ __current_state];
+		target_state_function.start();
+		
+	}
+	
+	static link_state_with_other_state = function(_state_name_from/*:string*/, _state_name_to/*:string*/) {
+		__state_links[$ _state_name_from] = _state_name_to;
 	}
 	
 	static process = function()/*->void*/ {
-		var current_state_function = __states[$ __current_state];
+		var current_state_function/*:State*/ = __states[$ __current_state];
 		if (current_state_function != undefined) {
-			var state_result = current_state_function.step();
-			if (state_result == undefined) state_result = STATE_MACHINE_RESULT.IN_PROCESS;
-			
-			if (state_result == STATE_MACHINE_RESULT.END) {
-				current_state_function.finish();
-				self.state_control(__current_state);
-			}
+			current_state_function.step();
 		}
 	}
 	
-	/// @override
-	static state_control = function(_finished_state)/*->void*/ {}
+	static draw = function()/*->void*/ {
+		var current_state_function/*:State*/ = __states[$ __current_state];
+		if (current_state_function != undefined) {
+			current_state_function.draw();
+		}
+	}
 }
 
-function State() constructor {
+
+function State(_state_machine/*:StateMachine*/) : PubSubHandler() constructor {
+	__state_machine = _state_machine; /// @is {StateMachine}
+	
 	/// @override
 	static start = function() {}
 	
@@ -43,53 +67,13 @@ function State() constructor {
 	static step = function() {}
 	
 	/// @override
+	static draw = function() {}
+	
+	/// @override
+	static pub_sub_perform = function(_event, _vars) {}
+	
+	/// @override
 	static finish = function() {}
 }
 
 
-
-/// EXAMPLE
-
-// var first_state:State = new State();
-// first_state.start = function() {
-// 	log("start first state!");
-// }
-// first_state.step = function() {
-// 	log("step first state!");
-// 	if (random(1) < 0.2) {
-// 		return STATE_MACHINE_RESULT.END;
-// 	}
-// }
-// first_state.finish = function() {
-// 	log("finish first state!");
-// }
-
-// var second_state:State = new State();
-// second_state.start = function() {
-// 	log("start second state!");
-// }
-// second_state.step = function() {
-// 	log("step second state!");
-// 	if (random(1) < 0.2) {
-// 		return STATE_MACHINE_RESULT.END;
-// 	}	
-// }
-// second_state.finish = function() {
-// 	log("finish second state!");
-// }
-
-// state_machine = new StateMachine();
-// state_machine.add_state("first_state",  first_state);
-// state_machine.add_state("second_state", second_state);
-// state_machine.state_start("first_state");
-// state_machine.state_control = function(_finished_state) {
-// 	switch (_finished_state) {
-// 		case "first_state":
-// 			state_machine.state_start("second_state");
-// 		break;
-		
-// 		case "second_state":
-// 			state_machine.state_start("first_state");
-// 		break;
-// 	}
-// }

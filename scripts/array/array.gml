@@ -58,9 +58,31 @@ function log() {
 	show_debug_message(str);
 }
 
+/// @function structless_print
+/// @description Bind this to a struct's toString method to print the struct without getting into recursive struct checks
+function structless_print(){
+	var structNames = variable_struct_get_names( self);
+	var nbVars = array_length( structNames);
+	var ret = "=======================\r\n";
+	var thisVal;
+	for( var i = 0; i < nbVars; ++i){
+		thisVal = variable_struct_get( self, structNames[i]);
+		if( is_struct( thisVal)){
+			thisVal = "<struct>";
+		}
+		ret += structNames[i] + ": " + string(thisVal) + "\r\n";
+	}
+	ret += "=======================";
+	
+	return ret;
+}
+
+
 function ds_list_delete_by_value(list, value) {
 	var index = ds_list_find_index(list, value);
 	if (index != -1) {
 		ds_list_delete(list, index);
+		return true;
 	}
+	return false;
 }

@@ -29,6 +29,7 @@
     {"id":{"name":"view_init","path":"scripts/view_init/view_init.yy",},"order":1,},
     {"id":{"name":"screen_get_safe_area","path":"scripts/screen_get_safe_area/screen_get_safe_area.yy",},"order":0,},
     {"id":{"name":"date","path":"scripts/date/date.yy",},"order":2,},
+    {"id":{"name":"StateMachineGame","path":"scripts/StateMachineGame/StateMachineGame.yy",},"order":13,},
   ],
   "Options": [
     {"name":"Amazon Fire","path":"options/amazonfire/options_amazonfire.yy",},
