@@ -16,3 +16,5 @@ event_gesture_dragging	= pub_sub_event_new("gesture_dragging");
 
 event_game_start		= pub_sub_event_new("game_start");
 event_game_restart		= pub_sub_event_new("game_restart");
+
+event_app_events		= pub_sub_event_new("app_events");

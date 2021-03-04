@@ -2,7 +2,7 @@ function StatePause(_state_machine/*:StateMachine*/) : State(_state_machine) con
 	static start = function() {}
 	
 	static step = function() {
-		if (keyboard_check_released(vk_anykey)) {
+		if (keyboard_check_released(vk_anykey) || mouse_check_button_released(mb_left)) {
 			__state_machine.switch_to_state("gameplay");
 		}		
 	}
@@ -23,7 +23,7 @@ function StatePauseBeforeGame(_state_machine/*:StateMachine*/) : State(_state_ma
 	static start = function() {}
 	
 	static step = function() {
-		if (keyboard_check_released(vk_anykey)) {
+		if (keyboard_check_released(vk_anykey) || mouse_check_button_released(mb_left)) {
 			__state_machine.switch_to_state("gameplay");
 		}
 	}
@@ -43,7 +43,7 @@ function StatePauseBeforeGame(_state_machine/*:StateMachine*/) : State(_state_ma
 
 function StateGameplay(_state_machine/*:StateMachine*/) : State(_state_machine) constructor {
 	static start = function() {
-		log("Gameplay start");
+		pub_sub_subscribe(PS.event_app_events, self);
 		GAME_CONTROLLER.set_pause(false);
 	}
 	
@@ -52,9 +52,21 @@ function StateGameplay(_state_machine/*:StateMachine*/) : State(_state_machine) 
 			__state_machine.switch_to_state("pause");
 		}
 	}
+	
+	static pub_sub_perform = function(_event, _vars) {
+		switch (_event) {
+			case PS.event_app_events:
+				switch (_vars[0]) {
+					case "foreground":
+						__state_machine.switch_to_state("pause");
+					break;
+				}
+			break;
+		}
+	}
 
 	static finish = function() {
-		log("Gameplay finish");
+		pub_sub_unsubscribe_all(self);
 		GAME_CONTROLLER.set_pause(true);
 	}	
 }

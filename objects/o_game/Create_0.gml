@@ -25,3 +25,5 @@ state_machine.initial_state("pause_before_game");
 state_machine.link_state_with_other_state("pause_before_game", "gameplay");
 state_machine.link_state_with_other_state("pause", "gameplay");
 state_machine.link_state_with_other_state("gameplay", "pause");
+
+app_foreground_watcher_init();
