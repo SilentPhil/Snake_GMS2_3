@@ -17,7 +17,7 @@ function InputController() constructor {
 	static pub_sub_perform = function(_event, _vars) {
 		switch (_event) {
 			case PS.event_gesture_drag_end:
-				self.step();
+				step();
 				__array_of_touch_process	= array_create(10, undefined);
 				__array_of_touch_start		= array_create(10, undefined);
 			// 	var diff_x = _vars[0];
@@ -31,7 +31,7 @@ function InputController() constructor {
 			// 		} else {
 			// 			diff_x = 0;
 			// 		}
-			// 		self.snake_move_order(diff_x, diff_y);
+			// 		snake_move_order(diff_x, diff_y);
 			// 	}
 			break;
 			
@@ -58,7 +58,7 @@ function InputController() constructor {
 	static step = function() {
 		var dx = (keyboard_check(vk_right) - keyboard_check(vk_left));
 		var dy = (keyboard_check(vk_down)  - keyboard_check(vk_up));
-		self.snake_move_order(dx, dy);
+		snake_move_order(dx, dy);
 		
 		for (var i = 0, size_i = array_length(__array_of_touch_process); i < size_i; i++) {
 			if (__array_of_touch_process[i] == undefined) continue;
@@ -78,7 +78,7 @@ function InputController() constructor {
 				} else {
 					diff_x = 0;
 				}
-				self.snake_move_order(diff_x, diff_y);
+				snake_move_order(diff_x, diff_y);
 				break;
 			}
 		}

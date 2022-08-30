@@ -15,7 +15,7 @@ function StatePause(_state_machine/*:StateMachine*/) : State(_state_machine) con
 		draw_set_color(c_white);
 		draw_text_transformed(global.view_w / 2, global.view_h / 2, "PRESS ANY KEY\nTO CONTINUE", 4.7, 4.7, 0);
 	}
-
+	
 	static finish = function() {}
 }
 

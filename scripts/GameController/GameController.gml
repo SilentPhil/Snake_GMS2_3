@@ -10,18 +10,18 @@ function GameController() constructor {
 	__apple_manager		= new AppleManager(__map);			/// @is {AppleManager}
 	__scores_manager	= new ScoresManager();				/// @is {ScoresManager}
 	__render			= new Render(self);					/// @is {Render}
-	__snake 			= undefined;						/// @is {Snake|undefined}
+	__snake 			= undefined;						/// @is {Snake?}
 
 	__frames			= 0;
 	__game_speed		= 3;	// GameTick per Seconds
 	__is_paused			= true;
 
 	static snake_move = function(snake_head_cell/*:MapCell*/)/*->bool*/ {
-		if (self.is_snake_moving_kill(snake_head_cell)) {
-			self.restart();
+		if (is_snake_moving_kill(snake_head_cell)) {
+			restart();
 			return false;
 		} else {
-			var apple/*:Apple|undefined*/ = snake_head_cell.get_specific_object("apple");
+			var apple/*:Apple?*/ = snake_head_cell.get_specific_object("apple");
 			if (apple != undefined) {
 				pub_sub_event_perform(PS.event_snake_eat_apple, [apple]);
 			}
@@ -44,7 +44,7 @@ function GameController() constructor {
 		__snake.destroy();
 		
 		pub_sub_event_perform(PS.event_game_restart);
-		self.start();
+		start();
 	}
 
 	static get_side_cell = function(_cell/*:MapCell*/, _side/*:SIDE*/)/*->MapCell*/ {
@@ -82,7 +82,7 @@ function GameController() constructor {
 		}
 		#endregion
 		
-		var cell/*:MapCell|undefined*/ = __map.get_cell(new_vector.x, new_vector.y);
+		var cell/*:MapCell?*/ = __map.get_cell(new_vector.x, new_vector.y);
 		if (cell != undefined) {
 			return (/*#cast*/ cell /*#as MapCell*/);
 		} else {
@@ -108,7 +108,7 @@ function GameController() constructor {
 		__frames++;
 		var one_tick_in_frames = (game_get_speed(gamespeed_fps) / __game_speed);
 		if (__frames >= one_tick_in_frames) {
-			self.game_tick();
+			game_tick();
 			__frames = __frames - one_tick_in_frames;
 		}
 		

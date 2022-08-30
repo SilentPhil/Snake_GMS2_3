@@ -9,11 +9,11 @@ function ScoresManager() constructor {
 	static pub_sub_perform = function(_event, _vars) {
 		switch (_event) {
 			case PS.event_snake_eat_apple:
-				self.add_scores(10);
+				add_scores(10);
 			break;
 			
 			case PS.event_game_restart:
-				self.clear();
+				clear();
 			break;
 		}
 	}

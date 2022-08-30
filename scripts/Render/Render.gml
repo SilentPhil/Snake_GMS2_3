@@ -55,8 +55,8 @@ function Render(_game_controller/*:GameController*/) constructor {
 				var cell/*:MapCell*/ = array_of_cells_with_objects[i];
 				
 				var cell_position/*:Vector*/ = cell.get_position();
-				var draw_x = self.map_x_to_display_x(cell_position.x);
-				var draw_y = self.map_y_to_display_y(cell_position.y);
+				var draw_x = map_x_to_display_x(cell_position.x);
+				var draw_y = map_y_to_display_y(cell_position.y);
 				
 				var array_of_objects = cell.get_array_of_objects();
 				for (var k = 0, size_k = array_length(array_of_objects); k < size_k; k++) {
@@ -69,7 +69,7 @@ function Render(_game_controller/*:GameController*/) constructor {
 			draw_set_font(global.font);
 			draw_set_color(__color_hud);
 			
-			var hud_position_y/*:number*/ = self.map_y_to_display_y(__hud_position.y);
+			var hud_position_y/*:number*/ = map_y_to_display_y(__hud_position.y);
 			draw_text_transformed(__map_margin.x, hud_position_y, "@@@@@", __symbol_factor, __symbol_factor, 0);
 			
 			draw_set_halign(fa_right);
@@ -157,7 +157,7 @@ function Render(_game_controller/*:GameController*/) constructor {
 			draw_clear_alpha(__color_bg, 1);
 			draw_surface(__surf_objects, 0, 0);
 		}
-		self.draw_debug();
+		draw_debug();
 	}
 	
 	static draw_debug = function() {

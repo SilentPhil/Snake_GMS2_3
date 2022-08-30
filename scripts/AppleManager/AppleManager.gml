@@ -10,16 +10,16 @@ function AppleManager(_map/*:Map*/) constructor {
 		switch (_event) {
 			case PS.event_snake_eat_apple:
 				var apple/*:Apple*/ = _vars[0];
-				self.spawn_apple(1);
-				self.destroy_apple(apple);
+				spawn_apple(1);
+				destroy_apple(apple);
 			break;
 			
 			case PS.event_game_start:
-				self.spawn_apple(2);
+				spawn_apple(2);
 			break;	
 			
 			case PS.event_game_restart:
-				self.destroy_all_apples();
+				destroy_all_apples();
 			break;
 		}
 	}

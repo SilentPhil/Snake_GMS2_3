@@ -35,7 +35,7 @@ function Map() constructor {
 	__map_width 	= array_length(__array_of_cells);
 	__map_height	= array_length(__array_of_cells[0]);
 	
-	static get_cell = function(_x, _y)/*->MapCell|undefined*/ {
+	static get_cell = function(_x, _y)/*->MapCell?*/ {
 		return __array_of_cells[_x][_y];
 	}
 	
@@ -139,7 +139,7 @@ function MapCell(_map/*:Map*/, _position/*:Vector*/) constructor {
 		}
 	}
 	
-	static get_specific_object = function(_object_type/*:string*/)/*->MapObject|undefined*/ {
+	static get_specific_object = function(_object_type/*:string*/)/*->MapObject?*/ {
 		for (var i = 0, size_i = array_length(__array_of_objects); i < size_i; i++) {
 			var obj/*:MapObject*/ = __array_of_objects[i];
 			if (obj.get_type() == _object_type) {

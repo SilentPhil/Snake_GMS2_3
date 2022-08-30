@@ -1,8 +1,8 @@
 function MapObject() : RenderObject() constructor {
-	__cell = undefined;	/// @is {MapCell|undefined}
+	__cell = undefined;	/// @is {MapCell?}
 	__type = "";
 	
-	static get_cell = function()/*->MapCell|undefined*/ {
+	static get_cell = function()/*->MapCell?*/ {
 		return __cell;
 	}
 	
@@ -67,7 +67,7 @@ function SnakeSegment(_snake/*:Snake*/, _is_head/*:bool*/) : MapObject() constru
 				var next_segment/*:SnakeSegment*/		= array_of_segments[segment_index - 1];
 				var previous_segment/*:SnakeSegment*/	= array_of_segments[segment_index + 1];
 				
-				var segment_position/*:Vector*/ 				= self.get_cell().get_position();
+				var segment_position/*:Vector*/ 				= get_cell().get_position();
 				
 				var next_segment_cell_position/*:Vector*/		= next_segment.get_cell().get_position();
 				var next_segment_offset/*:Vector*/				= next_segment_cell_position.substract(segment_position);

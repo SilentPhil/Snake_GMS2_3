@@ -10,8 +10,6 @@ function Snake(_game_controller/*:GameController*/, _start_cell/*:MapCell*/, _or
 	
 	__is_eat_apple = false;
 	
-	
-	
 	pub_sub_subscribe(PS.event_snake_turn_order,	self);
 	pub_sub_subscribe(PS.event_snake_turn_clock,	self);
 	pub_sub_subscribe(PS.event_snake_eat_apple,		self);
@@ -20,13 +18,13 @@ function Snake(_game_controller/*:GameController*/, _start_cell/*:MapCell*/, _or
 		switch (_event) {
 			case PS.event_snake_turn_order:
 				var side/*:SIDE*/ = _vars[0];
-				self.turn(side);
+				turn(side);
 			break;
 			
 			case PS.event_snake_turn_clock:
-				var turn/*:TURN*/	= _vars[0];
+				var _turn/*:TURN*/	= _vars[0];
 				var orientation = __orientation;
-				if (turn == TURN.CLOCKWISE) {
+				if (_turn == TURN.CLOCKWISE) {
 					orientation = (orientation + 1) % 4;
 					log(orientation);
 				} else {
@@ -34,11 +32,11 @@ function Snake(_game_controller/*:GameController*/, _start_cell/*:MapCell*/, _or
 					if (orientation < 0) orientation = 3;
 					log(orientation);
 				}
-				self.turn(orientation);
+				turn(orientation);
 			break;
 			
 			case PS.event_snake_eat_apple:
-				self.grow_up(1);
+				grow_up(1);
 				__is_eat_apple = true;
 			break;
 		}
