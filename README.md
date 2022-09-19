@@ -9,3 +9,5 @@ You could find in this example:
 [Gameplay video (YouTube)](https://www.youtube.com/watch?v=8K_sUl_mPyw)
 
 My [article 🇷🇺](https://dtf.ru/indie/656101-snake-bin) about creation this... game? I don't know... example may be. But on russian only. 
+
+![screenshot](/snake.png)
