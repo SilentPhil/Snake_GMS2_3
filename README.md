@@ -1,5 +1,5 @@
 # Snake GMS2.3
-Classic snake game on GMS 2.3+ with OOP practices. Project can be compiled on PC, Mac, Linux, iOS, Android (I think on Opera GX).
+Classic snake game on GMS 2.3+ with OOP practices. Project can be compiled on PC, Mac, Linux, iOS, Android (I think on Opera GX too).
 You could find in this example:
 - Publisher & Subscribers pattern for game control
 - GLSL Shaders gfx - glow, blur, scan lines, screen distortion
