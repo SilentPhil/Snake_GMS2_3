@@ -21,13 +21,14 @@ function GameController() constructor {
 			restart();
 			return false;
 		} else {
-			var apple/*:Apple?*/ = snake_head_cell.get_specific_object("apple");
+			var apple = snake_head_cell.get_specific_object("apple");
 			if (apple != undefined) {
 				pub_sub_event_perform(PS.event_snake_eat_apple, [apple]);
 			}
 			return true;
 		}
 	}
+	
 	static is_snake_moving_kill = function(snake_head_cell/*:MapCell*/)/*->bool*/ {
 		return (snake_head_cell.get_specific_object("wall") != undefined || snake_head_cell.get_specific_object("snake") != undefined);
 	}
@@ -47,7 +48,7 @@ function GameController() constructor {
 		start();
 	}
 
-	static get_side_cell = function(_cell/*:MapCell*/, _side/*:SIDE*/)/*->MapCell*/ {
+	static get_side_cell = function(_cell/*:MapCell*/, _side/*:int<SIDE>*/)/*->MapCell*/ {
 		var shift_vector/*:Vector*/;
 		switch (_side) {
 			case SIDE.UP:

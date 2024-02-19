@@ -28,7 +28,7 @@ function Apple() : MapObject() constructor {
 	__type = "apple";
 	
 	static draw = function(_x/*:number*/, _y/*:number*/, _factor/*:number*/)/*->void*/ {
-		draw_sprite_ext(s_graphics, 1, _x, _y, _factor, _factor, 0, /*#*/0x2d54dd, 1);
+		draw_sprite_ext(s_graphics, 1, _x, _y, _factor, _factor, 0, #dd542d, 1);
 	}
 }
 
@@ -36,7 +36,7 @@ function Wall() : MapObject() constructor {
 	__type = "wall";
 	
 	static draw = function(_x/*:number*/, _y/*:number*/, _factor/*:number*/)/*->void*/ {
-		draw_sprite_ext(s_graphics, 0, _x, _y, _factor, _factor, 0, /*#*/0x3783cc, 1);
+		draw_sprite_ext(s_graphics, 0, _x, _y, _factor, _factor, 0, #cc8337, 1);
 	}
 }
 
@@ -92,15 +92,15 @@ function SnakeSegment(_snake/*:Snake*/, _is_head/*:bool*/) : MapObject() constru
 				}
 			}
 		}
-		draw_sprite_ext(s_graphics, subimg, _x, _y, _factor, _factor, 0, /*#*/0x4cd0f8, 1);
+		draw_sprite_ext(s_graphics, subimg, _x, _y, _factor, _factor, 0, #f8d04c, 1);
 		//draw_text(_position.x, _position.y, __is_apple_inside);
 	}	
 	
-	static set_orientation = function(_orientation/*:SIDE*/)/*->void*/ {
+	static set_orientation = function(_orientation/*:int<SIDE>*/)/*->void*/ {
 		__orientation = _orientation;
 	}
 	
-	static get_orientation = function()/*->SIDE*/ {
+	static get_orientation = function()/*->int<SIDE>*/ {
 		return __orientation;
 	}
 }

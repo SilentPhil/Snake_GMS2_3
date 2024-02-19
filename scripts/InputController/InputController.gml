@@ -81,15 +81,7 @@ function InputController() constructor {
 				snake_move_order(diff_x, diff_y);
 				break;
 			}
-		}
-		
-		// if (mouse_check_button_pressed(mb_left)) {
-		// 	var tap_x = mouse_x;
-		// 	var tap_y = mouse_y;
-			
-		// 	var turn:TURN = ((tap_x > global.view_w / 2) ? TURN.CLOCKWISE : TURN.COUNTERCLOCKWISE);
-		// 	pub_sub_event_perform(PS.event_snake_turn_clock, [turn]);
-		// }		
+		}	
 	}
 	
 	static snake_move_order = function(_dx/*:number*/, _dy/*:number*/) {

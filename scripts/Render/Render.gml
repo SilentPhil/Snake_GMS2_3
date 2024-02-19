@@ -23,8 +23,8 @@ function Render(_game_controller/*:GameController*/) constructor {
 	__is_gfx			= true;
 	__is_show_debug		= true;
 	
-	__color_bg			= /*#*/0x181818;
-	__color_hud			= /*#*/0x86b3d7;
+	__color_bg			= #181818;
+	__color_hud			= #d7b386;
 	
 	__hud_position		= new Vector(0, -2);
 	
@@ -73,7 +73,7 @@ function Render(_game_controller/*:GameController*/) constructor {
 			draw_text_transformed(__map_margin.x, hud_position_y, "@@@@@", __symbol_factor, __symbol_factor, 0);
 			
 			draw_set_halign(fa_right);
-			draw_text_transformed(__screen_width - __map_margin.x, hud_position_y, __scores_manager.get_display_scores(), __symbol_factor, __symbol_factor, 0);
+			draw_text_transformed(__screen_width - __map_margin.x, hud_position_y, string(__scores_manager.get_display_scores()), __symbol_factor, __symbol_factor, 0);
 			
 			gpu_set_tex_filter(true);
 			

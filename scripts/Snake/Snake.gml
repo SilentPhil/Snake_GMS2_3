@@ -1,7 +1,7 @@
-function Snake(_game_controller/*:GameController*/, _start_cell/*:MapCell*/, _orientation/*:SIDE*/) constructor {
+function Snake(_game_controller/*:GameController*/, _start_cell/*:MapCell*/, _orientation/*:int<SIDE>*/) constructor {
 	__game_controller		= _game_controller;				/// @is {GameController}
-	__orientation			= _orientation;					/// @is {SIDE}
-	__orientation_next_tick	= _orientation;					/// @is {SIDE}
+	__orientation			= _orientation;					/// @is {int<SIDE>}
+	__orientation_next_tick	= _orientation;					/// @is {int<SIDE>}
 	__orientation_keeper	= 0;	// Сколько ходов сохраняется поворот в "смертельную" сторону
 	__head_segment			= new SnakeSegment(self, true);	/// @is {SnakeSegment}
 	__array_of_segments 	= [__head_segment];				/// @is {array<SnakeSegment>}
@@ -11,28 +11,13 @@ function Snake(_game_controller/*:GameController*/, _start_cell/*:MapCell*/, _or
 	__is_eat_apple = false;
 	
 	pub_sub_subscribe(PS.event_snake_turn_order,	self);
-	pub_sub_subscribe(PS.event_snake_turn_clock,	self);
 	pub_sub_subscribe(PS.event_snake_eat_apple,		self);
 	
 	static pub_sub_perform = function(_event, _vars) {
 		switch (_event) {
 			case PS.event_snake_turn_order:
-				var side/*:SIDE*/ = _vars[0];
+				var side/*:int<SIDE>*/ = _vars[0];
 				turn(side);
-			break;
-			
-			case PS.event_snake_turn_clock:
-				var _turn/*:TURN*/	= _vars[0];
-				var orientation = __orientation;
-				if (_turn == TURN.CLOCKWISE) {
-					orientation = (orientation + 1) % 4;
-					log(orientation);
-				} else {
-					orientation--;
-					if (orientation < 0) orientation = 3;
-					log(orientation);
-				}
-				turn(orientation);
 			break;
 			
 			case PS.event_snake_eat_apple:
@@ -98,7 +83,7 @@ function Snake(_game_controller/*:GameController*/, _start_cell/*:MapCell*/, _or
 		}
 	}
 	
-	static turn = function(_side/*:SIDE*/)/*->void*/ {
+	static turn = function(_side/*:int<SIDE>*/)/*->void*/ {
 		var is_opposite_moving			= (abs(__orientation - (/*#cast*/ _side)) == 2);
 		var is_same_orientation_moving	= (_side == __orientation_next_tick);
 		if (!is_opposite_moving && !is_same_orientation_moving) {
@@ -127,8 +112,4 @@ enum SIDE {
 	RIGHT,
 	DOWN,
 	LEFT
-}
-enum TURN {
-	CLOCKWISE,
-	COUNTERCLOCKWISE,
 }
