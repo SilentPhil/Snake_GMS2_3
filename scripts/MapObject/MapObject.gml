@@ -63,7 +63,7 @@ function SnakeSegment(_snake/*:Snake*/, _is_head/*:bool*/) : MapObject() constru
 			if (is_tail) {
 				subimg = 9 + array_of_segments[array_length(array_of_segments) - 2].get_orientation();
 			} else {
-				var segment_index/*:number*/			= array_find_index(array_of_segments, self);
+				var segment_index/*:number*/			= array_get_index(array_of_segments, self);
 				var next_segment/*:SnakeSegment*/		= array_of_segments[segment_index - 1];
 				var previous_segment/*:SnakeSegment*/	= array_of_segments[segment_index + 1];
 				
