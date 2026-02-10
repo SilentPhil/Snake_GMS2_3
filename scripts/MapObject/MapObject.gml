@@ -75,6 +75,20 @@ function SnakeSegment(_snake/*:Snake*/, _is_head/*:bool*/) : MapObject() constru
 				var previous_segment_cell_position/*:Vector*/	= previous_segment.get_cell().get_position();
 				var previous_segment_offset/*:Vector*/			= previous_segment_cell_position.substract(segment_position);
 				
+				if (abs(next_segment_offset.x) > 1) {
+					next_segment_offset.x = -sign(next_segment_offset.x);
+				}
+				if (abs(next_segment_offset.y) > 1) {
+					next_segment_offset.y = -sign(next_segment_offset.y);
+				}
+				
+				if (abs(previous_segment_offset.x) > 1) {
+					previous_segment_offset.x = -sign(previous_segment_offset.x);
+				}
+				if (abs(previous_segment_offset.y) > 1) {
+					previous_segment_offset.y = -sign(previous_segment_offset.y);
+				}
+				
 				if (next_segment_offset.x == 1 && next_segment_offset.y == 0 && previous_segment_offset.x == 0 && previous_segment_offset.y == 1) ||
 			      (next_segment_offset.x == 0 && next_segment_offset.y == 1 && previous_segment_offset.x == 1 && previous_segment_offset.y == 0) {
 					subimg = __is_apple_inside ? 23 : 13;
