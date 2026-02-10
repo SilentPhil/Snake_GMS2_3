@@ -61,16 +61,38 @@ function SnakeSegment(_snake/*:Snake*/, _is_head/*:bool*/) : MapObject() constru
 			var array_of_segments/*:array<SnakeSegment>*/ = __snake.get_array_of_segments();
 			var is_tail = (array_get_last(array_of_segments) == self);
 			if (is_tail) {
-				subimg = 9 + array_of_segments[array_length(array_of_segments) - 2].get_orientation();
+				if (array_length(array_of_segments) >= 2) {
+					subimg = 9 + array_of_segments[array_length(array_of_segments) - 2].get_orientation();
+				} else {
+					subimg = 9 + __orientation;
+				}
 			} else {
 				var segment_index/*:number*/			= array_get_index(array_of_segments, self);
-				var next_segment/*:SnakeSegment*/		= array_of_segments[segment_index - 1];
 				var previous_segment/*:SnakeSegment*/	= array_of_segments[segment_index + 1];
 				
 				var segment_position/*:Vector*/ 				= get_cell().get_position();
 				
-				var next_segment_cell_position/*:Vector*/		= next_segment.get_cell().get_position();
-				var next_segment_offset/*:Vector*/				= next_segment_cell_position.substract(segment_position);
+				var next_segment_offset/*:Vector*/ = undefined;
+				if (segment_index > 0) {
+					var next_segment/*:SnakeSegment*/			= array_of_segments[segment_index - 1];
+					var next_segment_cell_position/*:Vector*/	= next_segment.get_cell().get_position();
+					next_segment_offset = next_segment_cell_position.substract(segment_position);
+				} else {
+					switch(__orientation) {
+						case SIDE.UP:
+							next_segment_offset = new Vector(0, -1);
+						break;
+						case SIDE.RIGHT:
+							next_segment_offset = new Vector(1, 0);
+						break;
+						case SIDE.DOWN:
+							next_segment_offset = new Vector(0, 1);
+						break;
+						case SIDE.LEFT:
+							next_segment_offset = new Vector(-1, 0);
+						break;
+					}
+				}
 				
 				var previous_segment_cell_position/*:Vector*/	= previous_segment.get_cell().get_position();
 				var previous_segment_offset/*:Vector*/			= previous_segment_cell_position.substract(segment_position);

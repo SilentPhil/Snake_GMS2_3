@@ -44,6 +44,8 @@ function StatePauseBeforeGame(_state_machine/*:StateMachine*/) : State(_state_ma
 function StateGameplay(_state_machine/*:StateMachine*/) : State(_state_machine) constructor {
 	static start = function() {
 		pub_sub_subscribe(PS.event_app_events, self);
+        // Подписываемся на смерть, чтобы переключить состояние
+        pub_sub_subscribe(PS.event_snake_died, self);
 		GAME_CONTROLLER.set_pause(false);
 	}
 	
@@ -51,6 +53,7 @@ function StateGameplay(_state_machine/*:StateMachine*/) : State(_state_machine) 
 		if (keyboard_check_released(ord("P"))) {
 			__state_machine.switch_to_state("pause");
 		}
+        GAME_CONTROLLER.step(); // Явный вызов шага игры
 	}
 	
 	static pub_sub_perform = function(_event, _vars) {
@@ -62,6 +65,10 @@ function StateGameplay(_state_machine/*:StateMachine*/) : State(_state_machine) 
 					break;
 				}
 			break;
+            // --- NEW CASE ---
+            case PS.event_snake_died:
+                __state_machine.switch_to_state("death");
+            break;
 		}
 	}
 
@@ -69,4 +76,46 @@ function StateGameplay(_state_machine/*:StateMachine*/) : State(_state_machine) 
 		pub_sub_unsubscribe_all(self);
 		GAME_CONTROLLER.set_pause(true);
 	}	
+}
+
+function StateDeath(_state_machine/*:StateMachine*/) : State(_state_machine) constructor {
+    __timer = 0;
+    __decay_delay_frames = 5; // Скорость исчезновения (каждые 5 кадров)
+
+    static start = function() {
+        __timer = 0;
+        // Мы НЕ вызываем GAME_CONTROLLER.set_pause(false), 
+        // поэтому step() контроллера не работает, движение остановлено.
+        // Но Render продолжает работать в o_game Draw event.
+    }
+
+    static step = function() {
+        if (__timer > 0) {
+            __timer--;
+            return;
+        }
+
+        var snake = GAME_CONTROLLER.__snake;
+        
+        if (snake != undefined && !snake.is_empty()) {
+            // Удаляем голову
+            snake.remove_head_segment();
+            // Запускаем эффект
+            pub_sub_event_perform(PS.event_snake_decay);
+            // Ставим таймер
+            __timer = __decay_delay_frames;
+        } else {
+            // Змейка кончилась
+            GAME_CONTROLLER.restart();
+            // Возвращаемся в игру или в паузу перед стартом
+            // Можно использовать "pause_before_game", если хотите нажатия клавиши
+            __state_machine.switch_to_state("gameplay"); 
+        }
+    }
+
+    static draw = function() {
+        // Можно ничего не рисовать, рендер идет из o_game Draw
+    }
+    
+    static finish = function() {}
 }

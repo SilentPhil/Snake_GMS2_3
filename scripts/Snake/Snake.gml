@@ -10,6 +10,8 @@ function Snake(_game_controller/*:GameController*/, _start_cell/*:MapCell*/, _or
 	
 	__is_eat_apple = false;
 	
+	grow_up(5);
+	
 	pub_sub_subscribe(PS.event_snake_turn_order,	self);
 	pub_sub_subscribe(PS.event_snake_eat_apple,		self);
 	
@@ -92,6 +94,24 @@ function Snake(_game_controller/*:GameController*/, _start_cell/*:MapCell*/, _or
 			pub_sub_event_perform(PS.event_snake_turn);
 		}
 	}
+	
+    // Удаляет голову змейки (индекс 0)
+    static remove_head_segment = function() {
+        if (array_length(__array_of_segments) > 0) {
+            var segment = __array_of_segments[0];
+            segment.destroy();
+            array_delete(__array_of_segments, 0, 1);
+            
+            if (array_length(__array_of_segments) > 0) {
+                __head_segment = __array_of_segments[0];
+            }
+        }
+    }
+
+    // Возвращает true, если змейка кончилась
+    static is_empty = function() {
+        return (array_length(__array_of_segments) == 0);
+    }	
 	
 	static destroy = function()/*->void*/ {
 		for (var i = 0, size_i = array_length(__array_of_segments); i < size_i; i++) {

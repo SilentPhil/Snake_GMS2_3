@@ -21,9 +21,15 @@ state_machine = new StateMachine();	/// @is {StateMachine}
 state_machine.add_state("pause_before_game",	new StatePauseBeforeGame(state_machine));
 state_machine.add_state("pause",				new StatePause(state_machine));
 state_machine.add_state("gameplay", 			new StateGameplay(state_machine));
+state_machine.add_state("death", 			    new StateDeath(state_machine));
+
 state_machine.initial_state("pause_before_game");
 state_machine.link_state_with_other_state("pause_before_game", "gameplay");
 state_machine.link_state_with_other_state("pause", "gameplay");
 state_machine.link_state_with_other_state("gameplay", "pause");
+// --- LINKS ---
+state_machine.link_state_with_other_state("gameplay", "death"); // Переход из игры в смерть
+state_machine.link_state_with_other_state("death", "gameplay"); // Рестарт сразу в игру
+// state_machine.link_state_with_other_state("death", "pause_before_game"); // Или на экран "Press Any Key"
 
 app_foreground_watcher_init();

@@ -18,7 +18,7 @@ function GameController() constructor {
 
 	static snake_move = function(snake_head_cell/*:MapCell*/)/*->bool*/ {
 		if (is_snake_moving_kill(snake_head_cell)) {
-			restart();
+			pub_sub_event_perform(PS.event_snake_died);
 			return false;
 		} else {
 			var apple = snake_head_cell.get_specific_object("apple");
@@ -42,7 +42,9 @@ function GameController() constructor {
 	}
 	
 	static restart = function()/*->void*/ {
-		__snake.destroy();
+        if (__snake != undefined) {
+		    __snake.destroy();
+        }
 		
 		pub_sub_event_perform(PS.event_game_restart);
 		start();

@@ -1,4 +1,4 @@
-function Render(_game_controller/*:GameController*/) constructor {
+function Render(_game_controller/*:GameController*/) : PubSubHandler() constructor {
 	__game_controller	= _game_controller;						/// @is {GameController}
 	__scores_manager	= _game_controller.__scores_manager;	/// @is {ScoresManager}
 	__map				= _game_controller.__map;				/// @is {Map}
@@ -32,12 +32,22 @@ function Render(_game_controller/*:GameController*/) constructor {
     __glitch_decay      = 0.1;
     
     pub_sub_subscribe(PS.event_snake_eat_apple, self);
+	pub_sub_subscribe(PS.event_snake_died, self);
+    pub_sub_subscribe(PS.event_snake_decay, self);    
     
     static pub_sub_perform = function(_event, _vars) {
         switch (_event) {
             case PS.event_snake_eat_apple:
                 __glitch_intensity = 1.0;
             break;
+            
+            case PS.event_snake_died:
+                __glitch_intensity = 1.5; // Сильный глитч при ударе
+            break;
+            
+            case PS.event_snake_decay:
+                __glitch_intensity = 0.8; // Средний глитч при исчезновении сегмента
+            break;            
         }
     }
 	
