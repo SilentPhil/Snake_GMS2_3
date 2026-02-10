@@ -28,6 +28,19 @@ function Render(_game_controller/*:GameController*/) constructor {
 	
 	__hud_position		= new Vector(0, -2);
 	
+    __glitch_intensity  = 0;
+    __glitch_decay      = 0.1;
+    
+    pub_sub_subscribe(PS.event_snake_eat_apple, self);
+    
+    static pub_sub_perform = function(_event, _vars) {
+        switch (_event) {
+            case PS.event_snake_eat_apple:
+                __glitch_intensity = 1.0;
+            break;
+        }
+    }
+	
 	static map_x_to_display_x = function(_x/*:number*/)/*->number*/ {
 		return __map_margin.x + _x * __cell_size;
 	}
@@ -117,6 +130,11 @@ function Render(_game_controller/*:GameController*/) constructor {
 			shader_reset();
 			#endregion glow
 		
+	        if (__glitch_intensity > 0) {
+	            __glitch_intensity = lerp(__glitch_intensity, 0, __glitch_decay);
+	            if (__glitch_intensity < 0.01) __glitch_intensity = 0;
+	        }
+		
 			if (!surface_exists(__surf_final)) {
 				__surf_final = surface_create(__screen_width, __screen_height);
 			}	
@@ -138,8 +156,19 @@ function Render(_game_controller/*:GameController*/) constructor {
 				draw_surface_ext(__surf_blur_2_pass, 0, 0, 1 / blur_scale, 1 / blur_scale, 0, glow_color_blend, glow_flicker_alpha);
 				gpu_set_blendmode(bm_normal);			
 				#endregion draw glow
+				
+	            if (__glitch_intensity > 0) {
+	                shader_set(glsl_glitch);
+	                shader_set_uniform_f(shader_get_uniform(glsl_glitch, "u_fTime"), current_time / 1000.0);
+	                shader_set_uniform_f(shader_get_uniform(glsl_glitch, "u_fIntensity"), __glitch_intensity);
+	                
+	                draw_surface(__surf_objects, 0, 0);
+	                
+	                shader_reset();
+	            } else {
+	                draw_surface(__surf_objects, 0, 0);
+	            }				
 		
-				draw_surface(__surf_objects, 0, 0);
 			surface_reset_target();
 		
 			#region scanlines && distortion

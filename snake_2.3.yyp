@@ -47,6 +47,7 @@
     {"id":{"name":"s_font","path":"sprites/s_font/s_font.yy",},},
     {"id":{"name":"pub_sub_event_perform","path":"scripts/pub_sub_event_perform/pub_sub_event_perform.yy",},},
     {"id":{"name":"Map","path":"scripts/Map/Map.yy",},},
+    {"id":{"name":"glsl_glitch","path":"shaders/glsl_glitch/glsl_glitch.yy",},"order":0,},
     {"id":{"name":"s_graphics","path":"sprites/s_graphics/s_graphics.yy",},},
     {"id":{"name":"Render","path":"scripts/Render/Render.yy",},},
     {"id":{"name":"o_pub_sub_controller","path":"objects/o_pub_sub_controller/o_pub_sub_controller.yy",},},

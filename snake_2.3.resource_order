@@ -13,6 +13,7 @@
     {"name":"o_pub_sub_controller","order":1,"path":"objects/o_pub_sub_controller/o_pub_sub_controller.yy",},
     {"name":"GameController","order":6,"path":"scripts/GameController/GameController.yy",},
     {"name":"MapObject","order":8,"path":"scripts/MapObject/MapObject.yy",},
+    {"name":"glsl_glitch","path":"shaders/glsl_glitch/glsl_glitch.yy","order":2,},
     {"name":"StateMachine","order":10,"path":"scripts/StateMachine/StateMachine.yy",},
     {"name":"AppleManager","order":11,"path":"scripts/AppleManager/AppleManager.yy",},
     {"name":"ex_app_foreground_watcher","order":1,"path":"extensions/ex_app_foreground_watcher/ex_app_foreground_watcher.yy",},
