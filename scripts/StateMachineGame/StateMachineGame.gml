@@ -98,10 +98,14 @@ function StateDeath(_state_machine/*:StateMachine*/) : State(_state_machine) con
         var snake = GAME_CONTROLLER.__snake;
         
         if (snake != undefined && !snake.is_empty()) {
-            // Удаляем голову
-            snake.remove_head_segment();
-            // Запускаем эффект
-            pub_sub_event_perform(PS.event_snake_decay);
+            // Удаляем голову и получаем координаты удаленного сегмента
+            var destroyed_pos = snake.remove_head_segment();
+            // Запускаем эффект распада с позицией для визуального эффекта
+            if (destroyed_pos != undefined) {
+                pub_sub_event_perform(PS.event_snake_decay, [destroyed_pos.x, destroyed_pos.y]);
+            } else {
+                pub_sub_event_perform(PS.event_snake_decay);
+            }
             // Ставим таймер
             __timer = __decay_delay_frames;
         } else {

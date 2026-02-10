@@ -27,9 +27,20 @@ function Render(_game_controller/*:GameController*/) : PubSubHandler() construct
 	__color_hud			= #d7b386;
 	
 	__hud_position		= new Vector(0, -2);
+	__part_sys			= part_system_create();
+	__part_type_decay	= part_type_create();
 	
     __glitch_intensity  = 0;
     __glitch_decay      = 0.1;
+	
+	part_system_automatic_draw(__part_sys, false);
+	part_type_shape(__part_type_decay, pt_shape_square);
+	part_type_size(__part_type_decay, 0.3, 0.5, -0.01, 0);
+	part_type_life(__part_type_decay, 20, 40);
+	part_type_color1(__part_type_decay, #f8d04c);
+	part_type_speed(__part_type_decay, 2, 5, -0.1, 0);
+	part_type_direction(__part_type_decay, 0, 360, 0, 0);
+	part_type_orientation(__part_type_decay, 0, 360, 2, 0, false);
     
     pub_sub_subscribe(PS.event_snake_eat_apple, self);
 	pub_sub_subscribe(PS.event_snake_died, self);
@@ -47,6 +58,13 @@ function Render(_game_controller/*:GameController*/) : PubSubHandler() construct
             
             case PS.event_snake_decay:
                 __glitch_intensity = 0.8; // Средний глитч при исчезновении сегмента
+				if (array_length(_vars) >= 2) {
+					var map_x/*:number*/ = _vars[0];
+					var map_y/*:number*/ = _vars[1];
+					var screen_x/*:number*/ = map_x_to_display_x(map_x) + (__cell_size / 2);
+					var screen_y/*:number*/ = map_y_to_display_y(map_y) + (__cell_size / 2);
+					part_particles_create(__part_sys, screen_x, screen_y, __part_type_decay, 12);
+				}
             break;            
         }
     }
@@ -87,6 +105,8 @@ function Render(_game_controller/*:GameController*/) : PubSubHandler() construct
 					map_object.draw(draw_x, draw_y, __symbol_factor);
 				}
 			}
+			
+			part_system_drawit(__part_sys);
 			
 			
 			draw_set_font(global.font);
@@ -247,6 +267,13 @@ function Render(_game_controller/*:GameController*/) : PubSubHandler() construct
 		if (keyboard_check_pressed(ord("D"))) {
 			__is_show_debug = !__is_show_debug;
 		}
+	}
+	
+	static destroy = function()/*->void*/ {
+		if (part_system_exists(__part_sys)) {
+			part_system_destroy(__part_sys);
+		}
+		part_type_destroy(__part_type_decay);
 	}
 	
 }

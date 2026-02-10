@@ -99,13 +99,22 @@ function Snake(_game_controller/*:GameController*/, _start_cell/*:MapCell*/, _or
     static remove_head_segment = function() {
         if (array_length(__array_of_segments) > 0) {
             var segment = __array_of_segments[0];
+			var cell/*:MapCell?*/ = segment.get_cell();
+			var return_pos = undefined;
+			if (cell != undefined) {
+				var pos/*:Vector*/ = cell.get_position();
+				return_pos = {x: pos.x, y: pos.y};
+			}
             segment.destroy();
             array_delete(__array_of_segments, 0, 1);
             
             if (array_length(__array_of_segments) > 0) {
                 __head_segment = __array_of_segments[0];
             }
+			
+			return return_pos;
         }
+		return undefined;
     }
 
     // Возвращает true, если змейка кончилась
